@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- List Preference Sort Arrays -->
+    <array name="pref_sort_option_labels">
+        <item>@string/pref_sort_label_most_popular</item>
+        <item>@string/pref_sort_label_top_rated</item>
+        <item>@string/pref_sort_label_favorited</item>
+    </array>
+    <array name="pref_sort_option_values">
+        <item>@string/pref_sort_most_popular_value</item>
+        <item>@string/pref_sort_top_rated_value</item>
+        <item>@string/pref_sort_favorited_value</item>
+    </array>
+</resources>

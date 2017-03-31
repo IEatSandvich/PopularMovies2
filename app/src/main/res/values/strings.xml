@@ -1,3 +1,102 @@
 <resources>
-    <string name="app_name">Popular Movies</string>
+    <string name="app_name"                                 >Popular Movies</string>
+    <string name="most_popular"                             >Most Popular</string>
+    <string name="top_rated"                                >Top Rated</string>
+    <string name="favorited"                                >Favorited</string>
+    <string name="unknown"                                  >Unknown</string>
+
+    <!-- Errors -->
+    <string name="error_loading_movies"                     >Unable to load movies. Please try again</string>
+    <string name="error_loading_movie_details"              >Unable to load movie details. Please try again</string>
+    <string name="error_loading_favorited"                  >Unable to load favorited movies. Please try again</string>
+    <string name="error_invalid_api_key"                    >If you\'re seeing this message, contact the developer\n\nQuote Error Code: 7</string>
+    <string name="error_resource_not_found"                 >This movie could not be found. Go back and try again</string>
+    <string name="error_trailers_null"                      >There was a problem finding Trailers for this movie, please try again</string>
+    <string name="error_reviews_null"                       >There was a problem finding Reviews for this movie, please try again</string>
+    <string name="error_loading_poster"                     >Failed to load movie poster</string>
+    <string name="error_loading_backdrop"                   >Failed to load movie backdrop</string>
+    <string name="error_add_favorite_movie_db"              >Failed to favorite movie. Please try again</string>
+    <string name="error_update_favorite_movie_db"           >Failed to update movie status. Please try again</string>
+    <string name="error_update_favorite_movie_poster_db"    >Failed to update movie poster. Will retry when the movie is viewed again</string>
+
+    <string name="msg_cancel_search"                        >Search cancelled. Use the menu option to try again</string>
+    <string name="msg_no_favorited_movies"                  >You haven\'t favorited any movies yet. Check out the popular and top rated movies for some suggestions</string>
+    <string name="msg_no_trailers_found"                    >No trailers were found for this movie</string>
+    <string name="msg_no_reviews_found"                     >This movie hasn\'t been reviewed yet</string>
+
+    <string name="mi_title_sort_by"                         >Sort by..</string>
+    <string name="mi_title_most_popular"                    >Most Popular</string>
+    <string name="mi_title_top_rated"                       >Top Rated</string>
+    <string name="mi_title_favorited"                       >Favorited</string>
+    <string name="mi_title_settings"                        >Settings</string>
+    <string name="mi_title_cancel"                          >Cancel</string>
+    <string name="mi_title_favorite"                        >Favorite</string>
+    <string name="mi_title_unfavorite"                      >Unfavorite</string>
+
+    <string name="title_trailers"                           >Trailers</string>
+    <string name="title_reviews"                            >Reviews</string>
+
+    <!-- The Movie DB API Genres -->
+    <string name="genre_28"                                 >Action</string>
+    <string name="genre_12"                                 >Adventure</string>
+    <string name="genre_16"                                 >Animation</string>
+    <string name="genre_35"                                 >Comedy</string>
+    <string name="genre_80"                                 >Crime</string>
+    <string name="genre_99"                                 >Documentary</string>
+    <string name="genre_18"                                 >Drama</string>
+    <string name="genre_10751"                              >Family</string>
+    <string name="genre_14"                                 >Fantasy</string>
+    <string name="genre_36"                                 >History</string>
+    <string name="genre_27"                                 >Horror</string>
+    <string name="genre_10402"                              >Music</string>
+    <string name="genre_9648"                               >Mystery</string>
+    <string name="genre_10749"                              >Romance</string>
+    <string name="genre_878"                                >Science Fiction</string>
+    <string name="genre_10770"                              >TV Movie</string>
+    <string name="genre_53"                                 >Thriller</string>
+    <string name="genre_10752"                              >War</string>
+    <string name="genre_37"                                 >Western</string>
+    <string name="no_genre"                                 >No Genre Provided</string>
+
+    <!-- The Movie DB Image Widths -->
+    <string name="w_92"  translatable="false"               >w92</string>
+    <string name="w_154" translatable="false"               >w154</string>
+    <string name="w_185" translatable="false"               >w185</string>
+    <string name="w_342" translatable="false"               >w342</string>
+    <string name="w_500" translatable="false"               >w500</string>
+    <string name="w_780" translatable="false"               >w780</string>
+
+    <!-- Loader Bundle Keys -->
+    <string name="bundle_movies_url"            translatable="false">bundle_movies_url</string>
+    <string name="bundle_favorited_changed"     translatable="false">bundle_favorited_changed</string>
+    <string name="bundle_refresh_movies"        translatable="false">bundle_refresh_movies</string>
+    <string name="bundle_movie_id"              translatable="false">bundle_movie_id</string>
+    <string name="bundle_movie"                 translatable="false">bundle_movie</string>
+    <string name="bundle_movie_is_favorited"    translatable="false">bundle_movie_is_favorited</string>
+    <string name="bundle_movie_poster"          translatable="false">bundle_movie_poster</string>
+
+    <!-- Intent Extra Keys -->
+    <string name="intent_movie_id"          translatable="false">movie_id</string>
+    <string name="intent_favorited_changed" translatable="false">favorited_changed</string>
+
+    <!-- Label for List in Preference Screen -->
+    <string name="pref_sort_label">Sort By</string>
+
+    <!-- Labels for List Items -->
+    <string name="pref_sort_label_most_popular" >Most Popular</string>
+    <string name="pref_sort_label_top_rated"    >Top Rated</string>
+    <string name="pref_sort_label_favorited"    >Favorites</string>
+
+    <!-- List Preference Key -->
+    <string name="pref_sort_key" translatable="false">sort</string>
+
+    <!-- List Preference Values -->
+    <string name="pref_sort_most_popular_value" translatable="false">most_popular</string>
+    <string name="pref_sort_top_rated_value"    translatable="false">top_rated</string>
+    <string name="pref_sort_favorited_value"    translatable="false">favorited</string>
+
+    <!-- Default Value -->
+    <!-- Note: Check this matches the default SearchType returned in SharedPrefsutil -->
+    <string name="pref_sort_default_value" translatable="false">@string/pref_sort_most_popular_value</string>
+
 </resources>

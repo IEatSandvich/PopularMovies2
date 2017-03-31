@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+
+Converted from SVG to Android XML at http://inloop.github.io/svg2android/
+
+Original SVG downloaded from https://material.io/icons
+
+-->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="150dp"
+    android:height="225dp"
+    android:viewportWidth="184"
+    android:viewportHeight="276">
+
+    <path android:fillColor="#339E9E9E"
+        android:pathData="M111.500001,153.166667l0,-30.333334c0,-2.383333 -1.95,-4.333333 -4.333333,-4.333333l-30.333334,0c-2.383333,0 -4.333333,1.95 -4.333333,4.333333l0,30.333334c0,2.383333 1.95,4.333333 4.333333,4.333333l30.333334,0c2.383333,0 4.333333,-1.95 4.333333,-4.333333zm-27.083334,-11.916667l5.416667,6.521667l7.583334,-9.771667l9.75,13l-30.333334,0l7.583334,-9.75z"/>
+</vector>

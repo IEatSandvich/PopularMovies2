@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_sort_by"
+        android:title="@string/mi_title_sort_by"
+        app:showAsAction="ifRoom"
+        android:orderInCategory="0"
+        android:icon="@drawable/ic_sort_white">
+        <menu>
+            <item
+                android:id="@+id/action_most_popular"
+                android:title="@string/mi_title_most_popular"
+                android:orderInCategory="0"/>
+            <item
+                android:id="@+id/action_top_rated"
+                android:title="@string/mi_title_top_rated"
+                android:orderInCategory="1"/>
+            <item
+                android:id="@+id/action_favorited"
+                android:title="@string/mi_title_favorited"
+                android:orderInCategory="2"/>
+        </menu>
+    </item>
+    <item
+        android:id="@+id/action_cancel"
+        android:orderInCategory="1"
+        android:title="@string/mi_title_cancel"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_close_white"
+        android:visible="false"/>
+    <item
+        android:id="@+id/action_settings"
+        android:title="@string/mi_title_settings"
+        app:showAsAction="never"
+        android:orderInCategory="100"/>
+</menu>
