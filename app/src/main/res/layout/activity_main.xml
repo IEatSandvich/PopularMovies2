@@ -33,6 +33,51 @@
         android:visibility="gone"
         android:textSize="@dimen/activity_error_message_text_size"/>
 
+<!--
+
+
+        app:layout_constraintRight_toLeftOf="@+id/btn_no_fav_top_rated"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintHorizontal_chainStyle="packed"
+
+-->
+
+    <Button
+        android:id="@+id/btn_no_fav_most_pop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/most_popular"
+        android:textSize="@dimen/activity_error_message_text_size"
+        app:layout_constraintTop_toBottomOf="@+id/tv_error_msg"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="@dimen/btn_no_favorite_vertical_margin"
+        android:layout_marginStart="@dimen/btn_no_favorite_horizontal_margin"
+        android:layout_marginEnd="@dimen/btn_no_favorite_horizontal_margin"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:visibility="gone"/>
+<!--
+
+        app:layout_constraintLeft_toRightOf="@+id/btn_no_fav_most_pop"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintHorizontal_chainStyle="packed"
+
+-->
+
+    <Button
+        android:id="@+id/btn_no_fav_top_rated"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/top_rated"
+        android:textSize="@dimen/activity_error_message_text_size"
+        app:layout_constraintTop_toBottomOf="@+id/btn_no_fav_most_pop"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginStart="@dimen/btn_no_favorite_horizontal_margin"
+        android:layout_marginEnd="@dimen/btn_no_favorite_horizontal_margin"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:visibility="gone"/>
+
     <ProgressBar
         android:id="@+id/pb_loading_movies"
         android:layout_width="wrap_content"

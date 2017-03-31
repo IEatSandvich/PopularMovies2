@@ -125,6 +125,7 @@ public class DetailsActivity extends AppCompatActivity implements
         reviewsAdapter = new MovieReviewsAdapter();
         rvReviews.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         rvReviews.setAdapter(reviewsAdapter);
+        rvReviews.setNestedScrollingEnabled(false);
 
         trailersAdapter = new MovieTrailersAdapter(this);
         rvTrailers.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -136,7 +137,6 @@ public class DetailsActivity extends AppCompatActivity implements
         getFavoritedMovieLoaderCallbacks = new GetFavoritedMovieLoaderCallbacks(this, this);
         addFavoritedMovieLoaderCallbacks = new AddFavoritedMovieLoaderCallbacks(this, this);
         updateFavoritedMovieLoaderCallbacks = new UpdateFavoritedMovieLoaderCallbacks(this, this);
-
     }
 
     @Override
@@ -213,8 +213,15 @@ public class DetailsActivity extends AppCompatActivity implements
                     getSupportLoaderManager().restartLoader(ADD_FAVORITED_MOVIE_LOADER, queryBundle, addFavoritedMovieLoaderCallbacks);
                 }
                 return true;
+            case R.id.action_settings:
+                showSettingsActivity();
+                return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showSettingsActivity() {
+        startActivity(new Intent(this, SettingsActivity.class));
     }
 
     @Override
@@ -330,7 +337,7 @@ public class DetailsActivity extends AppCompatActivity implements
         setTitle(movie.getTitle());
 
         Picasso.with(this)
-                .load(TheMovieDBUtil.getImageUrl(this, movie.getBackdropPath(), R.string.w_780).toString())
+                .load(TheMovieDBUtil.getImageUri(this, movie.getBackdropPath(), R.string.detail_backdrop_width))
                 .placeholder(R.drawable.ic_backdrop_placeholder)
                 .into(ivMovieBackdrop, new Callback.EmptyCallback() {
                     @Override
@@ -348,8 +355,10 @@ public class DetailsActivity extends AppCompatActivity implements
                 });
 
         Picasso.with(this)
-                .load(TheMovieDBUtil.getImageUrl(this, movie.getPosterPath(), R.string.w_342).toString())
+                .load(TheMovieDBUtil.getImageUri(this, movie.getPosterPath(), R.string.detail_poster_width))
                 .placeholder(R.drawable.ic_poster_placeholder)
+                .resizeDimen(R.dimen.movie_poster_placeholder_width, R.dimen.movie_poster_placeholder_height)
+                .centerCrop()
                 .into(ivMoviePoster, new Callback.EmptyCallback() {
 
                     @Override

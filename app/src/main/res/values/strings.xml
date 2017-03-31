@@ -66,6 +66,10 @@
     <string name="w_500" translatable="false"               >w500</string>
     <string name="w_780" translatable="false"               >w780</string>
 
+    <string name="main_poster_width"            translatable="false">@string/w_342</string>
+    <string name="detail_poster_width"          translatable="false">@string/w_342</string>
+    <string name="detail_backdrop_width"        translatable="false">@string/w_780</string>
+
     <!-- Loader Bundle Keys -->
     <string name="bundle_movies_url"            translatable="false">bundle_movies_url</string>
     <string name="bundle_favorited_changed"     translatable="false">bundle_favorited_changed</string>
@@ -76,19 +80,19 @@
     <string name="bundle_movie_poster"          translatable="false">bundle_movie_poster</string>
 
     <!-- Intent Extra Keys -->
-    <string name="intent_movie_id"          translatable="false">movie_id</string>
-    <string name="intent_favorited_changed" translatable="false">favorited_changed</string>
+    <string name="intent_movie_id"              translatable="false">movie_id</string>
+    <string name="intent_favorited_changed"     translatable="false">favorited_changed</string>
 
     <!-- Label for List in Preference Screen -->
-    <string name="pref_sort_label">Sort By</string>
+    <string name="pref_sort_label"              >Default sort by</string>
 
     <!-- Labels for List Items -->
     <string name="pref_sort_label_most_popular" >Most Popular</string>
     <string name="pref_sort_label_top_rated"    >Top Rated</string>
-    <string name="pref_sort_label_favorited"    >Favorites</string>
+    <string name="pref_sort_label_favorited"    >Favorited</string>
 
     <!-- List Preference Key -->
-    <string name="pref_sort_key" translatable="false">sort</string>
+    <string name="pref_sort_key"                translatable="false">sort</string>
 
     <!-- List Preference Values -->
     <string name="pref_sort_most_popular_value" translatable="false">most_popular</string>

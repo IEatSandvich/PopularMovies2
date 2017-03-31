@@ -188,7 +188,7 @@ public class Movie implements Parcelable{
             movie.setBackdropPath(json.getString(BACKDROP_PATH));
         }
         if(json.has(VOTE_AVERAGE)){
-            movie.setVoteAverage(json.getDouble(VOTE_AVERAGE) + " / 10.0");
+            movie.setVoteAverage(json.getDouble(VOTE_AVERAGE) + " / 10");
         }
         if(json.has(RUNTIME)){
             movie.setRuntime(json.getInt(RUNTIME) + " min");

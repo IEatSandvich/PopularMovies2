@@ -1,6 +1,7 @@
 package com.conuirwilliamson.popularmovies.adapters;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,9 +64,10 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
 
         void bind(final Movie movie){
             mMovieTitleDisplay.setText("");
-            String url = TheMovieDBUtil.getImageUrl(context, movie.getPosterPath(), R.string.w_342).toString();
+            Uri uri = TheMovieDBUtil.getImageUri(context, movie.getPosterPath(), R.string.main_poster_width);
             Picasso.with(context)
-                    .load(url)
+                    .load(uri)
+                    .placeholder(R.drawable.ic_poster_placeholder)
                     .into(mMoviePosterImage, new Callback() {
                         @Override
                         public void onSuccess() {}

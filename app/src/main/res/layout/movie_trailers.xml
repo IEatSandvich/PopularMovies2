@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_marginTop="@dimen/trailers_margin_vertical">
 
     <TextView
         android:layout_width="match_parent"
@@ -12,14 +13,14 @@
         android:layout_marginStart="@dimen/trailers_title_margin_horizontal"
         android:layout_marginEnd="@dimen/trailers_title_margin_horizontal"
         android:layout_marginTop="@dimen/trailers_title_margin_vertical"
-        android:textColor="@color/md_grey_300"/>
+        android:layout_marginBottom="@dimen/trailers_title_margin_vertical"
+        android:textColor="@color/md_grey_300"
+        android:textStyle="bold"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_movie_trailers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/trailers_title_margin_vertical"
-        android:layout_marginBottom="@dimen/trailers_title_margin_vertical"
         android:visibility="invisible"/>
 
     <TextView

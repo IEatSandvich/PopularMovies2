@@ -149,18 +149,12 @@ public class TheMovieDBUtil {
         }
     }
 
-    public static URL getImageUrl(Context context, String imageName){ return getImageUrl(context, imageName, WIDTH_DEFAULT); }
+    public static Uri getImageUri(Context context, String imageName){ return getImageUri(context, imageName, WIDTH_DEFAULT); }
 
-    public static URL getImageUrl(Context context, String imageName, int widthId) {
-        Uri uri = Uri.parse(Uri.parse(BASE_IMAGE_URL).buildUpon()
+    public static Uri getImageUri(Context context, String imageName, int widthId) {
+        return Uri.parse(Uri.parse(BASE_IMAGE_URL).buildUpon()
                 .appendPath(context.getResources().getString(widthId))
                 .build().toString().concat(imageName));
-        try {
-            return new URL(uri.toString());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     public static URL getMovieUrl(int movieID){

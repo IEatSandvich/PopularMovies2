@@ -7,9 +7,4 @@
         android:title="@string/mi_title_favorite"
         app:showAsAction="ifRoom"
         android:icon="@drawable/ic_not_favourite_white"/>
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/mi_title_settings"
-        app:showAsAction="never"/>
 </menu>

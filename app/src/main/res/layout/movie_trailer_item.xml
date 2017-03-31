@@ -10,31 +10,34 @@
         android:layout_width="@dimen/trailer_thumbnail_width"
         android:layout_height="@dimen/trailer_thumbnail_height"
         android:scaleType="centerCrop"
-        android:adjustViewBounds="true"/>
+        android:adjustViewBounds="true"
+        android:background="@color/colorPrimary"/>
 
     <TextView
         android:id="@+id/tv_trailer_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="start"
         android:paddingTop="@dimen/trailer_title_padding_vertical"
         android:paddingBottom="@dimen/trailer_title_padding_vertical"
         android:paddingStart="@dimen/trailer_title_padding_horizontal"
         android:paddingEnd="@dimen/trailer_title_padding_horizontal"
         android:textSize="@dimen/trailer_title_text_size"
         android:textColor="@color/md_grey_100"
-        android:background="@color/md_black_1000"/>
+        android:background="@color/colorPrimary"/>
 
     <TextView
         android:id="@+id/tv_trailer_size"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
+        android:layout_gravity="bottom"
+        android:gravity="end"
         android:paddingTop="@dimen/trailer_size_padding_vertical"
         android:paddingBottom="@dimen/trailer_size_padding_vertical"
         android:paddingStart="@dimen/trailer_size_padding_horizontal"
         android:paddingEnd="@dimen/trailer_size_padding_horizontal"
         android:textSize="@dimen/trailer_size_text_size"
         android:textColor="@color/md_grey_100"
-        android:background="@color/md_black_1000"/>
+        android:background="@color/colorPrimary"/>
 
 </android.support.v7.widget.CardView>

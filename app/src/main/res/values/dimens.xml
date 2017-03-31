@@ -2,6 +2,7 @@
 <resources>
 
     <dimen name="movie_poster_title_margin"             >16dp</dimen>
+    <dimen name="movie_poster_title_text_size"          >20sp</dimen>
     <dimen name="movie_poster_padding_horizontal"       >4dp</dimen>
     <dimen name="movie_poster_padding_vertical"         >4dp</dimen>
 
@@ -12,8 +13,11 @@
 
     <dimen name="activity_error_message_text_size"      >18sp</dimen>
 
-    <dimen name="movie_poster_title_text_size"          >20sp</dimen>
+    <dimen name="movie_synopsis_title_text_size"        >20sp</dimen>
+    <dimen name="movie_poster_placeholder_width"        >150dp</dimen>
+    <dimen name="movie_poster_placeholder_height"       >225dp</dimen>
     <dimen name="movie_detail_poster_horizontal_margin" >16dp</dimen>
+    <dimen name="movie_detail_poster_vertical_margin"   >16dp</dimen>
     <dimen name="movie_stats_text_size"                 >16sp</dimen>
     <dimen name="movie_overview_text_size"              >16sp</dimen>
     <dimen name="movie_overview_margin_horizontal"      >16dp</dimen>
@@ -21,14 +25,16 @@
     <dimen name="movie_detail_info_margin_horizontal"   >8dp</dimen>
     <dimen name="movie_detail_info_margin_vertical"     >8dp</dimen>
 
-    <dimen name="trailers_title_margin_vertical"        >24dp</dimen>
-    <dimen name="trailers_title_margin_horizontal"      >16dp</dimen>
+    <dimen name="trailers_margin_vertical"              >16dp</dimen>
+    <dimen name="trailers_title_margin_vertical"        >16dp</dimen>
+    <dimen name="trailers_title_margin_horizontal"      >32dp</dimen>
     <dimen name="trailers_title_text_size"              >20sp</dimen>
     <dimen name="trailers_error_margin_vertical"        >16dp</dimen>
     <dimen name="trailers_progress_margin_vertical"     >24dp</dimen>
 
-    <dimen name="reviews_title_margin_vertical"         >24dp</dimen>
-    <dimen name="reviews_title_margin_horizontal"       >16dp</dimen>
+    <dimen name="reviews_margin_vertical"               >16dp</dimen>
+    <dimen name="reviews_title_margin_vertical"         >16dp</dimen>
+    <dimen name="reviews_title_margin_horizontal"       >32dp</dimen>
     <dimen name="reviews_title_text_size"               >20sp</dimen>
     <dimen name="reviews_error_margin_vertical"         >16dp</dimen>
     <dimen name="reviews_progress_margin_vertical"      >24dp</dimen>
@@ -43,11 +49,18 @@
     <dimen name="trailer_size_padding_vertical"         >4dp</dimen>
     <dimen name="trailer_size_padding_horizontal"       >8dp</dimen>
 
+    <dimen name="review_item_padding_horizontal"        >16dp</dimen>
     <dimen name="review_content_text_size"              >16sp</dimen>
     <dimen name="review_author_text_size"               >16sp</dimen>
     <dimen name="review_author_margin_vertical"         >4dp</dimen>
     <dimen name="review_author_margin_horizontal"       >4dp</dimen>
-    <dimen name="review_line_height"                    >3dp</dimen>
+    <dimen name="review_line_height"                    >2dp</dimen>
     <dimen name="review_line_margin_vertical"           >4dp</dimen>
+
+    <dimen name="progressbar_spinner_dimen"             >42dp</dimen>
+
+    <dimen name="btn_no_favorite_vertical_margin"       >16dp</dimen>
+    <dimen name="btn_no_favorite_horizontal_margin"     >8dp</dimen>
+    <dimen name="btn_no_favorite_text_size"             >18sp</dimen>
 
 </resources>

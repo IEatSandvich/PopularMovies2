@@ -112,19 +112,19 @@
     </android.support.constraint.ConstraintLayout>
 
     <ProgressBar
-    android:id="@+id/pb_loading_movie_details"
-    android:layout_width="42dp"
-    android:layout_height="42dp"
-    android:layout_gravity="center"/>
+        android:id="@+id/pb_loading_movie_details"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_gravity="center"/>
 
     <TextView
-    android:id="@+id/tv_error_msg"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    tools:text="@string/error_loading_movie_details"
-    android:paddingStart="@dimen/activity_error_padding_horizontal"
-    android:paddingEnd="@dimen/activity_error_padding_horizontal"
-    android:gravity="center"
-    android:textSize="@dimen/activity_error_message_text_size"/>
+        android:id="@+id/tv_error_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        tools:text="@string/error_loading_movie_details"
+        android:paddingStart="@dimen/activity_error_padding_horizontal"
+        android:paddingEnd="@dimen/activity_error_padding_horizontal"
+        android:gravity="center"
+        android:textSize="@dimen/activity_error_message_text_size"/>
 </FrameLayout>

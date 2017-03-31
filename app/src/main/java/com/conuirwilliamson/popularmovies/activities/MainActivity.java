@@ -13,6 +13,7 @@ import android.view.InflateException;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity implements
         MoviesAdapter.MoviesAdapterOnClickHandler,
@@ -48,10 +50,12 @@ public class MainActivity extends AppCompatActivity implements
 
     public static final int REQUEST_IS_FAVORITE_UPDATED = 221;
 
-    @BindView(R.id.layout_root)         ConstraintLayout clLayoutroot;
-    @BindView(R.id.rv_movies)           RecyclerView rvMovies;
-    @BindView(R.id.tv_error_msg)        TextView tvErrorMsg;
-    @BindView(R.id.pb_loading_movies)   ProgressBar pbLoadingMovies;
+    @BindView(R.id.layout_root)             ConstraintLayout clLayoutroot;
+    @BindView(R.id.rv_movies)               RecyclerView rvMovies;
+    @BindView(R.id.tv_error_msg)            TextView tvErrorMsg;
+    @BindView(R.id.pb_loading_movies)       ProgressBar pbLoadingMovies;
+    @BindView(R.id.btn_no_fav_most_pop)     Button btnFavToMostPopular;
+    @BindView(R.id.btn_no_fav_top_rated)    Button btnFavToTopRated;
 
     private MenuItem miCancel;
     private MenuItem miSort;
@@ -192,6 +196,18 @@ public class MainActivity extends AppCompatActivity implements
         startActivity(new Intent(this, SettingsActivity.class));
     }
 
+    @OnClick(R.id.btn_no_fav_most_pop)
+    public void favoritesToMostPopular(){
+        showLoading();
+        startLoadingMovies(lastSearch = SearchType.MostPopular);
+    }
+
+    @OnClick(R.id.btn_no_fav_top_rated)
+    public void favoritesToTopRated(){
+        showLoading();
+        startLoadingMovies(lastSearch = SearchType.TopRated);
+    }
+
     @Override
     public void moviesLoaderFinished(Loader<ArrayList<Movie>> loader, ArrayList<Movie> movies) {
 
@@ -265,6 +281,8 @@ public class MainActivity extends AppCompatActivity implements
     private void showLoading(){
         hideView(rvMovies);
         hideView(tvErrorMsg);
+        hideView(btnFavToMostPopular);
+        hideView(btnFavToTopRated);
         showView(pbLoadingMovies);
     }
 
@@ -273,10 +291,16 @@ public class MainActivity extends AppCompatActivity implements
         hideView(pbLoadingMovies);
         tvErrorMsg.setText(message);
         showView(tvErrorMsg);
+        if(lastSearch == SearchType.Favorited){
+            showView(btnFavToMostPopular);
+            showView(btnFavToTopRated);
+        }
     }
 
     private void showMovies(ArrayList<Movie> movies){
         hideView(tvErrorMsg);
+        hideView(btnFavToMostPopular);
+        hideView(btnFavToTopRated);
         hideView(pbLoadingMovies);
         moviesAdapter.setData(movies);
         showView(rvMovies);

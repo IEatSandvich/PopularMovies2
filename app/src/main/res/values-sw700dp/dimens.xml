@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="movie_poster_title_margin"             >32dp</dimen>
+    <dimen name="movie_poster_title_text_size"          >20sp</dimen>
+    <dimen name="movie_poster_padding_horizontal"       >8dp</dimen>
+    <dimen name="movie_poster_padding_vertical"         >8dp</dimen>
+
+    <dimen name="activity_error_padding_horizontal"     >32dp</dimen>
+
+    <dimen name="rv_movies_padding_horizontal"          >4dp</dimen>
+    <dimen name="rv_movies_padding_vertical"            >4dp</dimen>
+
+    <dimen name="activity_error_message_text_size"      >24sp</dimen>
+
+    <dimen name="movie_synopsis_title_text_size"        >28sp</dimen>
+    <dimen name="movie_poster_placeholder_width"        >210dp</dimen>
+    <dimen name="movie_poster_placeholder_height"       >315dp</dimen>
+    <dimen name="movie_detail_poster_horizontal_margin" >32dp</dimen>
+    <dimen name="movie_detail_poster_vertical_margin"   >32dp</dimen>
+    <dimen name="movie_stats_text_size"                 >24sp</dimen>
+    <dimen name="movie_overview_text_size"              >24sp</dimen>
+    <dimen name="movie_overview_margin_horizontal"      >32dp</dimen>
+    <dimen name="movie_overview_margin_vertical"        >48dp</dimen>
+    <dimen name="movie_detail_info_margin_horizontal"   >16dp</dimen>
+    <dimen name="movie_detail_info_margin_vertical"     >16dp</dimen>
+
+    <dimen name="trailers_margin_vertical"              >16dp</dimen>
+    <dimen name="trailers_title_margin_vertical"        >16dp</dimen>
+    <dimen name="trailers_title_margin_horizontal"      >64dp</dimen>
+    <dimen name="trailers_title_text_size"              >28sp</dimen>
+    <dimen name="trailers_recycler_margin_vertical"     >32dp</dimen>
+    <dimen name="trailers_error_margin_vertical"        >32dp</dimen>
+    <dimen name="trailers_progress_margin_vertical"     >32dp</dimen>
+
+    <dimen name="reviews_margin_vertical"               >16dp</dimen>
+    <dimen name="reviews_title_margin_vertical"         >16dp</dimen>
+    <dimen name="reviews_title_margin_horizontal"       >64dp</dimen>
+    <dimen name="reviews_title_text_size"               >28sp</dimen>
+    <dimen name="reviews_recycler_margin_vertical"      >16dp</dimen>
+    <dimen name="reviews_error_margin_vertical"         >32dp</dimen>
+    <dimen name="reviews_progress_margin_vertical"      >32dp</dimen>
+
+    <dimen name="trailer_item_margin_horizontal"        >24dp</dimen>
+    <dimen name="trailer_thumbnail_width"               >410dp</dimen>
+    <dimen name="trailer_thumbnail_height"              >308dp</dimen>
+    <dimen name="trailer_title_text_size"               >20sp</dimen>
+    <dimen name="trailer_size_text_size"                >20sp</dimen>
+    <dimen name="trailer_title_padding_vertical"        >8dp</dimen>
+    <dimen name="trailer_title_padding_horizontal"      >16dp</dimen>
+    <dimen name="trailer_size_padding_vertical"         >8dp</dimen>
+    <dimen name="trailer_size_padding_horizontal"       >16dp</dimen>
+
+    <dimen name="review_item_padding_horizontal"        >32dp</dimen>
+    <dimen name="review_content_text_size"              >24sp</dimen>
+    <dimen name="review_author_text_size"               >24sp</dimen>
+    <dimen name="review_author_margin_vertical"         >8dp</dimen>
+    <dimen name="review_author_margin_horizontal"       >8dp</dimen>
+    <dimen name="review_line_height"                    >4dp</dimen>
+    <dimen name="review_line_margin_vertical"           >8dp</dimen>
+
+    <dimen name="progressbar_spinner_dimen"             >64dp</dimen>
+
+    <dimen name="btn_no_favorite_vertical_margin"       >16dp</dimen>
+    <dimen name="btn_no_favorite_horizontal_margin"     >8dp</dimen>
+    <dimen name="btn_no_favorite_text_size"             >24sp</dimen>
+
+</resources>
