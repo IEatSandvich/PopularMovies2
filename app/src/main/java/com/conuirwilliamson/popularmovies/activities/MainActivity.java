@@ -133,14 +133,18 @@ public class MainActivity extends AppCompatActivity implements
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        int firstVisibleItemPosition;
         firstVisibleItemPosition = isGridLayout ?
-                ((GridLayoutManager) rvMovies.getLayoutManager()).findFirstVisibleItemPosition() :
-                ((LinearLayoutManager) rvMovies.getLayoutManager()).findFirstVisibleItemPosition();
+                ((GridLayoutManager) rvMovies.getLayoutManager()).findFirstCompletelyVisibleItemPosition() :
+                ((LinearLayoutManager) rvMovies.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
 
         if(firstVisibleItemPosition < 0 ) firstVisibleItemPosition = 0;
         outState.putString(getString(R.string.intent_last_search), lastSearch.name());
         outState.putInt(getString(R.string.intent_first_movie_position), firstVisibleItemPosition);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
     }
 
     @Override
@@ -283,6 +287,11 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void handleClick(int movieId) {
+        firstVisibleItemPosition = isGridLayout ?
+                ((GridLayoutManager) rvMovies.getLayoutManager()).findFirstCompletelyVisibleItemPosition() :
+                ((LinearLayoutManager) rvMovies.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
+        if(firstVisibleItemPosition < 0) firstVisibleItemPosition = 0;
+
         Intent intent = new Intent(this, DetailsActivity.class).putExtra(getResources().getString(R.string.intent_movie_id), movieId);
         startActivityForResult(intent, REQUEST_IS_FAVORITE_UPDATED);
     }
@@ -343,6 +352,7 @@ public class MainActivity extends AppCompatActivity implements
         moviesAdapter.setData(movies);
         if(firstVisibleItemPosition >= 0 && firstVisibleItemPosition < movies.size()){
             rvMovies.getLayoutManager().scrollToPosition(firstVisibleItemPosition);
+            firstVisibleItemPosition = -1;
         }
         showView(rvMovies);
     }
@@ -362,3 +372,6 @@ public class MainActivity extends AppCompatActivity implements
     private void showView(View view){ view.setVisibility(View.VISIBLE); }
     private void hideView(View view){ view.setVisibility(View.INVISIBLE); }
 }
+
+// TODO: 01/04/2017 - Priority 0 - Add in some 'onboarding', maybe, maybe not
+// TODO: 01/04/2017 - Priority 0 - Maybe, on Long-click of a Movie, favorite the movie from here, in MainActivity, instead of having to go to DetailsActivity
