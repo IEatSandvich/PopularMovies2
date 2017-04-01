@@ -82,6 +82,8 @@
     <!-- Intent Extra Keys -->
     <string name="intent_movie_id"              translatable="false">movie_id</string>
     <string name="intent_favorited_changed"     translatable="false">favorited_changed</string>
+    <string name="intent_last_search"           translatable="false">last_search</string>
+    <string name="intent_first_movie_position"  translatable="false">first_movie_position</string>
 
     <!-- Label for List in Preference Screen -->
     <string name="pref_sort_label"              >Default sort by</string>
@@ -101,6 +103,6 @@
 
     <!-- Default Value -->
     <!-- Note: Check this matches the default SearchType returned in SharedPrefsutil -->
-    <string name="pref_sort_default_value" translatable="false">@string/pref_sort_most_popular_value</string>
+    <string name="pref_sort_default_value"      translatable="false">@string/pref_sort_most_popular_value</string>
 
 </resources>

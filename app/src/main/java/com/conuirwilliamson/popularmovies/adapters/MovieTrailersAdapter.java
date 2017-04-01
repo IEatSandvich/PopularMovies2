@@ -1,7 +1,6 @@
 package com.conuirwilliamson.popularmovies.adapters;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,9 +10,7 @@ import android.widget.TextView;
 
 import com.conuirwilliamson.popularmovies.R;
 import com.conuirwilliamson.popularmovies.models.Trailer;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.RequestCreator;
 
 import java.util.ArrayList;
 
@@ -49,9 +46,9 @@ public class MovieTrailersAdapter extends RecyclerView.Adapter<MovieTrailersAdap
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        @BindView(R.id.iv_trailer_thumbnail) ImageView mTrailerThumbnail;
-        @BindView(R.id.tv_trailer_title) TextView mTrailerTitle;
-        @BindView(R.id.tv_trailer_size) TextView mTrailerSize;
+        @BindView(R.id.iv_trailer_thumbnail) ImageView ivTrailerThumbnail;
+        @BindView(R.id.tv_trailer_title) TextView tvTrailerTitle;
+        @BindView(R.id.tv_trailer_size) TextView tvTrailerSize;
 
         String trailerUrl;
 
@@ -73,13 +70,13 @@ public class MovieTrailersAdapter extends RecyclerView.Adapter<MovieTrailersAdap
 
             trailerUrl = trailer.getSource();
 
-            mTrailerTitle.setText(trailer.getTrailerName());
-            mTrailerSize.setText(trailer.getSize());
+            tvTrailerTitle.setText(trailer.getTrailerName());
+            tvTrailerSize.setText(trailer.getSize());
 
             Picasso.with(context)
                     .load(trailer.getThumbnail())
                     .placeholder(R.drawable.ic_trailer_placeholder)
-                    .into(mTrailerThumbnail, null);
+                    .into(ivTrailerThumbnail, null);
         }
 
         @Override

@@ -7,11 +7,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.conuirwilliamson.popularmovies.R;
 import com.conuirwilliamson.popularmovies.models.Movie;
 import com.conuirwilliamson.popularmovies.utilities.TheMovieDBUtil;
+import com.conuirwilliamson.popularmovies.utilities.UIUtil;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -52,8 +54,9 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        @BindView(R.id.iv_movie_poster) ImageView mMoviePosterImage;
-        @BindView(R.id.tv_movie_title)  TextView mMovieTitleDisplay;
+        @BindView(R.id.rl_movie_item_root)  RelativeLayout rlMovieItemRoot;
+        @BindView(R.id.iv_movie_poster)     ImageView ivMoviePoster;
+        @BindView(R.id.tv_movie_title)      TextView tvMovieTitle;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -63,18 +66,24 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
         }
 
         void bind(final Movie movie){
-            mMovieTitleDisplay.setText("");
+            if(UIUtil.displayLinearLayoutMovies(context.getResources().getDisplayMetrics())){
+                rlMovieItemRoot.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            } else {
+                rlMovieItemRoot.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            }
+
+            tvMovieTitle.setText("");
             Uri uri = TheMovieDBUtil.getImageUri(context, movie.getPosterPath(), R.string.main_poster_width);
             Picasso.with(context)
                     .load(uri)
                     .placeholder(R.drawable.ic_poster_placeholder)
-                    .into(mMoviePosterImage, new Callback() {
+                    .into(ivMoviePoster, new Callback() {
                         @Override
                         public void onSuccess() {}
 
                         @Override
                         public void onError() {
-                            mMovieTitleDisplay.setText(movie.getTitle());
+                            tvMovieTitle.setText(movie.getTitle());
                         }
                     });
         }

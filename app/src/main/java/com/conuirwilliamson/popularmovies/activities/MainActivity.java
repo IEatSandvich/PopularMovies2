@@ -8,7 +8,9 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.InflateException;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,6 +25,7 @@ import com.conuirwilliamson.popularmovies.loaders.GetMoviesLoaderCallbacks;
 import com.conuirwilliamson.popularmovies.models.Movie;
 import com.conuirwilliamson.popularmovies.utilities.SharedPrefsUtil;
 import com.conuirwilliamson.popularmovies.utilities.TheMovieDBUtil;
+import com.conuirwilliamson.popularmovies.utilities.UIUtil;
 
 import java.util.ArrayList;
 
@@ -63,6 +66,12 @@ public class MainActivity extends AppCompatActivity implements
     private GetMoviesLoaderCallbacks moviesLoaderCallbacks;
 
     private MoviesAdapter moviesAdapter;
+    private LinearLayoutManager linearLayoutManager;
+    private GridLayoutManager gridLayoutManagerFourCol;
+    private GridLayoutManager gridLayoutManagerTwoCol;
+    private boolean isGridLayout = false;
+
+    private int firstVisibleItemPosition = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,14 +81,26 @@ public class MainActivity extends AppCompatActivity implements
 
         moviesLoaderCallbacks = new GetMoviesLoaderCallbacks(this, this);
 
-        rvMovies.setLayoutManager(new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false));
+        linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        gridLayoutManagerFourCol = new GridLayoutManager(this, 4, GridLayoutManager.VERTICAL, false);
+        gridLayoutManagerTwoCol = new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false);
+
+        rvMovies.setLayoutManager(getLayoutManager());
         rvMovies.setAdapter(moviesAdapter = new MoviesAdapter(this, this));
     }
 
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        startLoadingMovies(lastSearch = SharedPrefsUtil.getPreferredSearchType(this));
+
+        if(savedInstanceState != null) {
+            // Get the last searched movies, or the preferred default if the value doesnt exist.
+            SearchType search = SearchType.valueOf(savedInstanceState.getString(getString(R.string.intent_last_search), SharedPrefsUtil.getPreferredSearchType(this).name()));
+            firstVisibleItemPosition = savedInstanceState.getInt(getString(R.string.intent_first_movie_position), -1);
+            startLoadingMovies(lastSearch = search);
+        } else {
+            startLoadingMovies(lastSearch = SharedPrefsUtil.getPreferredSearchType(this));
+        }
     }
 
     @Override
@@ -111,11 +132,15 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-    }
 
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
+        int firstVisibleItemPosition;
+        firstVisibleItemPosition = isGridLayout ?
+                ((GridLayoutManager) rvMovies.getLayoutManager()).findFirstVisibleItemPosition() :
+                ((LinearLayoutManager) rvMovies.getLayoutManager()).findFirstVisibleItemPosition();
+
+        if(firstVisibleItemPosition < 0 ) firstVisibleItemPosition = 0;
+        outState.putString(getString(R.string.intent_last_search), lastSearch.name());
+        outState.putInt(getString(R.string.intent_first_movie_position), firstVisibleItemPosition);
     }
 
     @Override
@@ -278,6 +303,19 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    private RecyclerView.LayoutManager getLayoutManager(){
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+
+        if(UIUtil.displayLinearLayoutMovies(metrics)) {
+            isGridLayout = false;
+            return linearLayoutManager;
+        }
+        isGridLayout = true;
+        return UIUtil.isWiderThanIsTall(metrics) ?
+                gridLayoutManagerFourCol :
+                gridLayoutManagerTwoCol;
+    }
+
     private void showLoading(){
         hideView(rvMovies);
         hideView(tvErrorMsg);
@@ -303,6 +341,9 @@ public class MainActivity extends AppCompatActivity implements
         hideView(btnFavToTopRated);
         hideView(pbLoadingMovies);
         moviesAdapter.setData(movies);
+        if(firstVisibleItemPosition >= 0 && firstVisibleItemPosition < movies.size()){
+            rvMovies.getLayoutManager().scrollToPosition(firstVisibleItemPosition);
+        }
         showView(rvMovies);
     }
 
