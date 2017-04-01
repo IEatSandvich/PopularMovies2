@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:id="@+id/layout_root"
     android:focusableInTouchMode="true">
+    <!-- TODO: 01/04/2017 - Priority 1 - As per Project Review, look at changing to a collapsing toolbar, though not sure if it would work with the overlapping movie poster (which I do like..) -->
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
