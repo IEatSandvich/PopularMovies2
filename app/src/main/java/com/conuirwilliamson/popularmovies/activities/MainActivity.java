@@ -1,6 +1,7 @@
 package com.conuirwilliamson.popularmovies.activities;
 
 import android.content.Intent;
+import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
@@ -27,6 +28,8 @@ import com.conuirwilliamson.popularmovies.utilities.SharedPrefsUtil;
 import com.conuirwilliamson.popularmovies.utilities.TheMovieDBUtil;
 import com.conuirwilliamson.popularmovies.utilities.UIUtil;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -37,13 +40,20 @@ public class MainActivity extends AppCompatActivity implements
         MoviesAdapter.MoviesAdapterOnClickHandler,
         GetMoviesLoaderCallbacks.LoaderFinishedHandler{
 
-    public enum SearchType{
-        MostPopular,
-        TopRated,
-        Favorited
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({SEARCH_MODE_MOST_POPULAR, SEARCH_MODE_TOP_RATED, SEARCH_MODE_FAVORITED})
+    public @interface SearchMode{
+        int Default = SEARCH_MODE_MOST_POPULAR;
     }
 
-    private SearchType lastSearch;
+    public static final int SEARCH_MODE_MOST_POPULAR = 0;
+    public static final int SEARCH_MODE_TOP_RATED = 1;
+    public static final int SEARCH_MODE_FAVORITED = 2;
+
+    private int lastSearchMode;
+    @SearchMode public int getLastSearch(){return lastSearchMode;}
+    public void setLastSearch(@SearchMode int searchMode){lastSearchMode = searchMode;}
+
 
     private boolean requireFavoritedRefresh = false;
 
@@ -53,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements
 
     public static final int REQUEST_IS_FAVORITE_UPDATED = 221;
 
-    @BindView(R.id.layout_root)             ConstraintLayout clLayoutroot;
+    @BindView(R.id.layout_root)             ConstraintLayout clLayoutRoot;
     @BindView(R.id.rv_movies)               RecyclerView rvMovies;
     @BindView(R.id.tv_error_msg)            TextView tvErrorMsg;
     @BindView(R.id.pb_loading_movies)       ProgressBar pbLoadingMovies;
@@ -92,14 +102,14 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-
         if(savedInstanceState != null) {
-            // Get the last searched movies, or the preferred default if the value doesnt exist.
-            SearchType search = SearchType.valueOf(savedInstanceState.getString(getString(R.string.intent_last_search), SharedPrefsUtil.getPreferredSearchType(this).name()));
+            @SearchMode int search = savedInstanceState.getInt(getString(R.string.intent_last_search), SharedPrefsUtil.getPreferredSearchType(this));
+            setLastSearch(search);
             firstVisibleItemPosition = savedInstanceState.getInt(getString(R.string.intent_first_movie_position), -1);
-            startLoadingMovies(lastSearch = search);
+            startLoadingMovies(getLastSearch());
         } else {
-            startLoadingMovies(lastSearch = SharedPrefsUtil.getPreferredSearchType(this));
+            @SearchMode int search = SharedPrefsUtil.getPreferredSearchType(this);
+            startLoadingMovies(search);
         }
     }
 
@@ -111,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements
                 switch (resultCode){
                     case RESULT_OK:
                         if (requireFavoritedRefresh = requireFavoritedRefresh || data.getBooleanExtra(getString(R.string.intent_favorited_changed), false)) {
-                            if(lastSearch == SearchType.Favorited) {
+                            if(getLastSearch() == SEARCH_MODE_FAVORITED) {
                                 Bundle queryBundle = new Bundle();
                                 queryBundle.putBoolean(getString(R.string.bundle_favorited_changed), requireFavoritedRefresh);
                                 getSupportLoaderManager().restartLoader(FAVORITED_MOVIES_LOADER, queryBundle, moviesLoaderCallbacks);
@@ -119,10 +129,10 @@ public class MainActivity extends AppCompatActivity implements
                         }
                         break;
                     case TheMovieDBUtil.INVALID_API_KEY:
-                        Snackbar.make(clLayoutroot, R.string.error_invalid_api_key, Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(clLayoutRoot, R.string.error_invalid_api_key, Snackbar.LENGTH_LONG).show();
                         break;
                     case TheMovieDBUtil.RESOURCE_NOT_FOUND:
-                        Snackbar.make(clLayoutroot, R.string.error_resource_not_found, Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(clLayoutRoot, R.string.error_resource_not_found, Snackbar.LENGTH_LONG).show();
                         break;
                 }
                 break;
@@ -138,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements
                 ((LinearLayoutManager) rvMovies.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
 
         if(firstVisibleItemPosition < 0 ) firstVisibleItemPosition = 0;
-        outState.putString(getString(R.string.intent_last_search), lastSearch.name());
+        outState.putInt(getString(R.string.intent_last_search), getLastSearch());
         outState.putInt(getString(R.string.intent_first_movie_position), firstVisibleItemPosition);
     }
 
@@ -166,15 +176,18 @@ public class MainActivity extends AppCompatActivity implements
         switch (item.getItemId()) {
             case R.id.action_most_popular:
                 showLoading();
-                startLoadingMovies(lastSearch = SearchType.MostPopular);
+                @SearchMode int mpSearch = SEARCH_MODE_MOST_POPULAR;
+                startLoadingMovies(mpSearch);
                 return true;
             case R.id.action_top_rated:
                 showLoading();
-                startLoadingMovies(lastSearch = SearchType.TopRated);
+                @SearchMode int trSearch = SEARCH_MODE_TOP_RATED;
+                startLoadingMovies(trSearch);
                 return true;
             case R.id.action_favorited:
                 showLoading();
-                startLoadingMovies(lastSearch = SearchType.Favorited);
+                @SearchMode int fSearch = SEARCH_MODE_FAVORITED;
+                startLoadingMovies(fSearch);
                 requireFavoritedRefresh = false;
                 return true;
             case R.id.action_cancel:
@@ -188,34 +201,35 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    private void startLoadingMovies(SearchType type, Bundle bundle){
+    private void startLoadingMovies(@SearchMode int searchMode, Bundle bundle){
+        setLastSearch(searchMode);
         showCancel();
         updateTitle();
-        switch(type){
-            case MostPopular:
+        switch(searchMode){
+            case SEARCH_MODE_MOST_POPULAR:
                 getSupportLoaderManager().restartLoader(MOST_POPULAR_MOVIES_LOADER, bundle, moviesLoaderCallbacks);
                 break;
-            case TopRated:
+            case SEARCH_MODE_TOP_RATED:
                 getSupportLoaderManager().restartLoader(TOP_RATED_MOVIES_LOADER, bundle, moviesLoaderCallbacks);
                 break;
-            case Favorited:
+            case SEARCH_MODE_FAVORITED:
                 getSupportLoaderManager().restartLoader(FAVORITED_MOVIES_LOADER, bundle, moviesLoaderCallbacks);
                 break;
         }
     }
-    private void startLoadingMovies(SearchType type){ startLoadingMovies(type, null); }
+    private void startLoadingMovies(@SearchMode int searchMode){ startLoadingMovies(searchMode, null); }
 
     private void cancelLoadingMovies(){
         showSort();
         showError(getString(R.string.msg_cancel_search));
-        switch(lastSearch){
-            case MostPopular:
+        switch(getLastSearch()){
+            case SEARCH_MODE_MOST_POPULAR:
                 getSupportLoaderManager().getLoader(MOST_POPULAR_MOVIES_LOADER).cancelLoad();
                 break;
-            case TopRated:
+            case SEARCH_MODE_TOP_RATED:
                 getSupportLoaderManager().getLoader(TOP_RATED_MOVIES_LOADER).cancelLoad();
                 break;
-            case Favorited:
+            case SEARCH_MODE_FAVORITED:
                 getSupportLoaderManager().getLoader(FAVORITED_MOVIES_LOADER).cancelLoad();
                 break;
         }
@@ -228,13 +242,16 @@ public class MainActivity extends AppCompatActivity implements
     @OnClick(R.id.btn_no_fav_most_pop)
     public void favoritesToMostPopular(){
         showLoading();
-        startLoadingMovies(lastSearch = SearchType.MostPopular);
+        @SearchMode int search = SEARCH_MODE_MOST_POPULAR;
+        startLoadingMovies(search);
     }
 
     @OnClick(R.id.btn_no_fav_top_rated)
     public void favoritesToTopRated(){
         showLoading();
-        startLoadingMovies(lastSearch = SearchType.TopRated);
+
+        @SearchMode int search = SEARCH_MODE_TOP_RATED;
+        startLoadingMovies(search);
     }
 
     @Override
@@ -254,15 +271,15 @@ public class MainActivity extends AppCompatActivity implements
         // searched movies, return.
 
         int id = loader.getId();
-        if(id == FAVORITED_MOVIES_LOADER && lastSearch != SearchType.Favorited ||
-           id == MOST_POPULAR_MOVIES_LOADER && lastSearch != SearchType.MostPopular ||
-           id == TOP_RATED_MOVIES_LOADER && lastSearch != SearchType.TopRated) return;
+        if(id == FAVORITED_MOVIES_LOADER && getLastSearch() != SEARCH_MODE_FAVORITED ||
+           id == MOST_POPULAR_MOVIES_LOADER && getLastSearch() != SEARCH_MODE_MOST_POPULAR ||
+           id == TOP_RATED_MOVIES_LOADER && getLastSearch() != SEARCH_MODE_TOP_RATED) return;
 
         showSort();
 
         if (movies != null) {
             showMovies(movies);
-            if(lastSearch == SearchType.Favorited){ requireFavoritedRefresh = false; }
+            if(getLastSearch() == SEARCH_MODE_FAVORITED){ requireFavoritedRefresh = false; }
         } else {
             switch(Movie.getStatusCode()){
                 case TheMovieDBUtil.INVALID_API_KEY:
@@ -272,12 +289,12 @@ public class MainActivity extends AppCompatActivity implements
                     showError(getString(R.string.error_resource_not_found));
                     break;
                 default:
-                    switch (lastSearch) {
-                        case Favorited:
+                    switch (getLastSearch()) {
+                        case SEARCH_MODE_FAVORITED:
                             showError(getString(R.string.msg_no_favorited_movies));
                             break;
-                        case MostPopular:
-                        case TopRated:
+                        case SEARCH_MODE_MOST_POPULAR:
+                        case SEARCH_MODE_TOP_RATED:
                             showError(getString(R.string.error_loading_movies));
                             break;
                     }
@@ -297,14 +314,14 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void updateTitle(){
-        switch (lastSearch) {
-            case MostPopular:
+        switch (getLastSearch()) {
+            case SEARCH_MODE_MOST_POPULAR:
                 setTitle(R.string.most_popular);
                 break;
-            case TopRated:
+            case SEARCH_MODE_TOP_RATED:
                 setTitle(R.string.top_rated);
                 break;
-            case Favorited:
+            case SEARCH_MODE_FAVORITED:
                 setTitle(R.string.favorited);
                 break;
             default:
@@ -338,7 +355,7 @@ public class MainActivity extends AppCompatActivity implements
         hideView(pbLoadingMovies);
         tvErrorMsg.setText(message);
         showView(tvErrorMsg);
-        if(lastSearch == SearchType.Favorited){
+        if(getLastSearch() == SEARCH_MODE_FAVORITED){
             showView(btnFavToMostPopular);
             showView(btnFavToTopRated);
         }

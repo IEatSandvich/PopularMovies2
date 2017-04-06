@@ -1,5 +1,6 @@
 package com.conuirwilliamson.popularmovies.models;
 
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -7,16 +8,20 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 
 public class Trailer {
 
-    public static final String TAG = Trailer.class.getSimpleName();
+    private static final String TAG = Trailer.class.getSimpleName();
 
-    public enum TrailerSite{
-        YouTube,
-        QuickTime
-    }
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({YOUTUBE_TRAILER, QUICKTIME_TRAILER})
+    private @interface TrailerType{}
+
+    public static final int YOUTUBE_TRAILER = 0;
+    public static final int QUICKTIME_TRAILER = 1;
 
     private static final String YOUTUBE = "youtube";
     private static final String QUICKTIME = "quicktime";
@@ -85,20 +90,20 @@ public class Trailer {
         return getTrailerFromJson(new JSONObject(json));
     }
 
-    public static ArrayList<Trailer> getTrailersFromJson(@NonNull JSONObject json, @NonNull Trailer.TrailerSite site) throws JSONException{
+    public static ArrayList<Trailer> getTrailersFromJson(@NonNull JSONObject json, @TrailerType int site) throws JSONException{
         if (json.has(STATUS_CODE)) {
             int statusCode = json.getInt(STATUS_CODE);
-            Log.w(TAG, "Error retrieving trailers. -- Status Code: " + statusCode + " -- Status Message: " + json.getString(STATUS_MESSAGE));
+            Log.e(TAG, "Error retrieving trailers. -- Status Code: " + statusCode + " -- Status Message: " + json.getString(STATUS_MESSAGE));
             Trailer.setStatusCode(statusCode);
             return null;
         }
 
         String siteKey = null;
         switch(site){
-            case YouTube:
+            case YOUTUBE_TRAILER:
                 siteKey = YOUTUBE;
                 break;
-            case QuickTime:
+            case QUICKTIME_TRAILER:
                 throw new IllegalArgumentException("Quicktime trailers not yet implemented");
         }
 
@@ -115,7 +120,7 @@ public class Trailer {
         return trailers;
     }
 
-    public static ArrayList<Trailer> getTrailersFromJsonString(@NonNull String json, @NonNull Trailer.TrailerSite site) throws JSONException{
+    public static ArrayList<Trailer> getTrailersFromJsonString(@NonNull String json, @TrailerType int site) throws JSONException{
         return getTrailersFromJson(new JSONObject(json), site);
     }
 

@@ -88,20 +88,20 @@ public class SharedPrefsUtil {
         return getEditor(context).putStringSet(key, values);
     }
 
-    public static MainActivity.SearchType getPreferredSearchType(Context context){
+    public static int getPreferredSearchType(Context context){
         String pref_sort = getString(context,context.getString(R.string.pref_sort_key),context.getString(R.string.pref_sort_default_value));
 
         if(pref_sort.equals(context.getString(R.string.pref_sort_most_popular_value))){
-            return MainActivity.SearchType.MostPopular;
+            return MainActivity.SEARCH_MODE_MOST_POPULAR;
         }
         if(pref_sort.equals(context.getString(R.string.pref_sort_top_rated_value))){
-            return MainActivity.SearchType.TopRated;
+            return MainActivity.SEARCH_MODE_TOP_RATED;
         }
         if(pref_sort.equals(context.getString(R.string.pref_sort_favorited_value))){
-            return MainActivity.SearchType.Favorited;
+            return MainActivity.SEARCH_MODE_FAVORITED;
         }
 
         // Check: Make sure this matches pref_sort_default_value in strings.xml
-        return MainActivity.SearchType.MostPopular;
+        return MainActivity.SEARCH_MODE_MOST_POPULAR;
     }
 }

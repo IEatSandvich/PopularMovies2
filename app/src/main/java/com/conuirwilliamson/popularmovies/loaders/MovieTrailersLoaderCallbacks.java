@@ -59,7 +59,7 @@ public class MovieTrailersLoaderCallbacks implements LoaderManager.LoaderCallbac
                     public ArrayList<Trailer> loadInBackground() {
                         try {
                             String response = NetworkUtil.getResponseFromHttpUrl(TheMovieDBUtil.getMovieTrailersUrl(movieId));
-                            return Trailer.getTrailersFromJsonString(response, Trailer.TrailerSite.YouTube);
+                            return Trailer.getTrailersFromJsonString(response, Trailer.YOUTUBE_TRAILER);
                         } catch (IOException | JSONException e) {
                             e.printStackTrace();
                         }
