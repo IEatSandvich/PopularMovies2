@@ -7,9 +7,11 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 
+import com.conuirwilliamson.popularmovies.BuildConfig;
 import com.conuirwilliamson.popularmovies.R;
 import com.conuirwilliamson.popularmovies.activities.DetailsActivity;
 import com.conuirwilliamson.popularmovies.models.Review;
+import com.conuirwilliamson.popularmovies.models.ReviewsResponse;
 import com.conuirwilliamson.popularmovies.utilities.NetworkUtil;
 import com.conuirwilliamson.popularmovies.utilities.TheMovieDBUtil;
 
@@ -38,7 +40,7 @@ public class MovieReviewsLoaderCallbacks  implements LoaderManager.LoaderCallbac
             case DetailsActivity.MOVIE_REVIEWS_LOADER:
                 return new AsyncTaskLoader<ArrayList<Review>>(context) {
 
-                    private ArrayList<Review> cache;
+                    private ReviewsResponse cache;
                     private int movieId;
 
                     @Override
@@ -46,7 +48,7 @@ public class MovieReviewsLoaderCallbacks  implements LoaderManager.LoaderCallbac
                         if(cache != null ||
                                 args == null ||
                                 (movieId = args.getInt(context.getString(R.string.bundle_movie_id), -1)) == -1){
-                            deliverResult(cache);
+                            deliverResult(cache.getResults());
                         } else {
                             forceLoad();
                         }
@@ -55,9 +57,8 @@ public class MovieReviewsLoaderCallbacks  implements LoaderManager.LoaderCallbac
                     @Override
                     public ArrayList<Review> loadInBackground() {
                         try {
-                            String response = NetworkUtil.getResponseFromHttpUrl(TheMovieDBUtil.getMovieReviewsUrl(movieId));
-                            return Review.getReviewsFromJsonString(response);
-                        } catch (IOException | JSONException e) {
+                            return (cache = TheMovieDBUtil.getAPIService().getReviewsByMovieId(movieId, BuildConfig.TMDBAK).execute().body()).getResults();
+                        } catch (IOException e) {
                             e.printStackTrace();
                         }
                         return null;
@@ -65,7 +66,6 @@ public class MovieReviewsLoaderCallbacks  implements LoaderManager.LoaderCallbac
 
                     @Override
                     public void deliverResult(ArrayList<Review> data) {
-                        cache = data;
                         super.deliverResult(data);
                     }
                 };

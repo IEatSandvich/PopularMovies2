@@ -70,7 +70,7 @@ public class MovieTrailersAdapter extends RecyclerView.Adapter<MovieTrailersAdap
 
             trailerUrl = trailer.getSource();
 
-            tvTrailerTitle.setText(trailer.getTrailerName());
+            tvTrailerTitle.setText(trailer.getName());
             tvTrailerSize.setText(trailer.getSize());
 
             Picasso.with(context)

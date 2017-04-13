@@ -3,7 +3,7 @@
     <string name="most_popular"                             >Most Popular</string>
     <string name="top_rated"                                >Top Rated</string>
     <string name="favorited"                                >Favorited</string>
-    <string name="unknown"                                  >Unknown</string>
+    <string name="unknown_release_date"                     >Unknown Release Date</string>
 
     <!-- Errors -->
     <string name="error_loading_movies"                     >Unable to load movies. Please try again</string>

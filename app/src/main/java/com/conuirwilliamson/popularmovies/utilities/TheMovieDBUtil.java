@@ -6,11 +6,15 @@ import android.util.Log;
 
 import com.conuirwilliamson.popularmovies.BuildConfig;
 import com.conuirwilliamson.popularmovies.R;
+import com.conuirwilliamson.popularmovies.apis.TheMovieDBAPIService;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by conuirwilliamson on 29/03/2017.
@@ -20,19 +24,25 @@ public class TheMovieDBUtil {
 
     private static final String TAG = TheMovieDBUtil.class.getSimpleName();
 
+    private final static String BASE_URL = "https://api.themoviedb.org/3/";
+    private static TheMovieDBAPIService apiService;
+    public static TheMovieDBAPIService getAPIService(){
+        synchronized (TAG){
+            if(apiService == null){
+                apiService = new Retrofit.Builder()
+                        .baseUrl(BASE_URL)
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build()
+                        .create(TheMovieDBAPIService.class);
+            }
+            return apiService;
+        }
+    }
+
+    private final static String BASE_IMAGE_URL = "https://image.tmdb.org/t/p";
+
     public static final int INVALID_API_KEY = 7;
     public static final int RESOURCE_NOT_FOUND = 34;
-
-    private final static String BASE_URL = "https://api.themoviedb.org/3";
-    private final static String BASE_IMAGE_URL = "https://image.tmdb.org/t/p";
-    private final static String MOVIE_PATH = "movie";
-    private final static String POPULAR_PATH = "popular";
-    private final static String TOP_RATED_PATH = "top_rated";
-    private final static String REVIEWS_PATH = "reviews";
-    private final static String TRAILERS_PATH = "trailers";
-
-    private final static String QUERY_PARAM = "query";
-    private final static String API_KEY_PARAM = "api_key";
 
     private final static int WIDTH_DEFAULT = R.string.w_185;
 
@@ -44,7 +54,7 @@ public class TheMovieDBUtil {
         } catch (ParseException e) {
             e.printStackTrace();
             Log.e(TAG, "Error parsing date. Given date: " + date);
-            return context.getResources().getString(R.string.unknown);
+            return context.getResources().getString(R.string.unknown_release_date);
         }
     }
 
@@ -121,83 +131,11 @@ public class TheMovieDBUtil {
         return context.getResources().getString(stringId);
     }
 
-    public static URL getMostPopularUrl(){
-        Uri uri = Uri.parse(BASE_URL).buildUpon()
-                .appendPath(MOVIE_PATH)
-                .appendPath(POPULAR_PATH)
-                .appendQueryParameter(API_KEY_PARAM, BuildConfig.TMDBAK)
-                .build();
-        try {
-            return new URL(uri.toString());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public static URL getTopRatedUrl(){
-        Uri uri = Uri.parse(BASE_URL).buildUpon()
-                .appendPath(MOVIE_PATH)
-                .appendPath(TOP_RATED_PATH)
-                .appendQueryParameter(API_KEY_PARAM, BuildConfig.TMDBAK)
-                .build();
-        try {
-            return new URL(uri.toString());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     public static Uri getImageUri(Context context, String imageName){ return getImageUri(context, imageName, WIDTH_DEFAULT); }
 
     public static Uri getImageUri(Context context, String imageName, int widthId) {
         return Uri.parse(Uri.parse(BASE_IMAGE_URL).buildUpon()
                 .appendPath(context.getResources().getString(widthId))
                 .build().toString().concat(imageName));
-    }
-
-    public static URL getMovieUrl(int movieID){
-        Uri uri = Uri.parse(BASE_URL).buildUpon()
-                .appendPath(MOVIE_PATH)
-                .appendPath(String.valueOf(movieID))
-                .appendQueryParameter(API_KEY_PARAM, BuildConfig.TMDBAK)
-                .build();
-        try {
-            return new URL(uri.toString());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public static URL getMovieReviewsUrl(int movieID){
-        Uri uri = Uri.parse(BASE_URL).buildUpon()
-                .appendPath(MOVIE_PATH)
-                .appendPath(String.valueOf(movieID))
-                .appendPath(REVIEWS_PATH)
-                .appendQueryParameter(API_KEY_PARAM, BuildConfig.TMDBAK)
-                .build();
-        try{
-            return new URL(uri.toString());
-        } catch (MalformedURLException e){
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public static URL getMovieTrailersUrl(int movieID){
-        Uri uri = Uri.parse(BASE_URL).buildUpon()
-                .appendPath(MOVIE_PATH)
-                .appendPath(String.valueOf(movieID))
-                .appendPath(TRAILERS_PATH)
-                .appendQueryParameter(API_KEY_PARAM, BuildConfig.TMDBAK)
-                .build();
-        try{
-            return new URL(uri.toString());
-        } catch (MalformedURLException e){
-            e.printStackTrace();
-            return null;
-        }
     }
 }

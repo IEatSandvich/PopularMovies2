@@ -7,20 +7,29 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 
+import com.conuirwilliamson.popularmovies.BuildConfig;
 import com.conuirwilliamson.popularmovies.activities.DetailsActivity;
 import com.conuirwilliamson.popularmovies.activities.MainActivity;
 import com.conuirwilliamson.popularmovies.R;
+import com.conuirwilliamson.popularmovies.apis.TheMovieDBAPIService;
 import com.conuirwilliamson.popularmovies.models.Movie;
+import com.conuirwilliamson.popularmovies.models.MoviesResponse;
+import com.conuirwilliamson.popularmovies.models.ReviewsResponse;
+import com.conuirwilliamson.popularmovies.models.TheMovieDBResponse;
 import com.conuirwilliamson.popularmovies.utilities.DatabaseUtil;
 import com.conuirwilliamson.popularmovies.utilities.NetworkUtil;
 import com.conuirwilliamson.popularmovies.utilities.TheMovieDBUtil;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class GetMoviesLoaderCallbacks implements LoaderManager.LoaderCallbacks<ArrayList<Movie>> {
+import retrofit2.Response;
+
+public class GetMoviesLoaderCallbacks implements LoaderManager.LoaderCallbacks<MoviesResponse> {
 
     private final Context context;
     private final LoaderFinishedHandler handler;
@@ -31,9 +40,9 @@ public class GetMoviesLoaderCallbacks implements LoaderManager.LoaderCallbacks<A
     }
 
     @Override
-    public Loader<ArrayList<Movie>> onCreateLoader(final int id, final Bundle args) {
+    public Loader<MoviesResponse> onCreateLoader(final int id, final Bundle args) {
         switch(id){
-            case MainActivity.FAVORITED_MOVIES_LOADER:
+            /*case MainActivity.FAVORITED_MOVIES_LOADER:
                 return new AsyncTaskLoader<ArrayList<Movie>>(context) {
                     private ArrayList<Movie> cache;
 
@@ -60,16 +69,16 @@ public class GetMoviesLoaderCallbacks implements LoaderManager.LoaderCallbacks<A
                         cache = data;
                         super.deliverResult(data);
                     }
-                };
+                };*/
 
             case MainActivity.MOST_POPULAR_MOVIES_LOADER:
-                return new AsyncTaskLoader<ArrayList<Movie>>(context) {
+                return new AsyncTaskLoader<MoviesResponse>(context) {
 
-                    private ArrayList<Movie> cache;
+                    private MoviesResponse cache;
 
                     @Override
                     public void onStartLoading(){
-                        if(cache == null) {
+                        if(cache == null || cache.getResponseType() == TheMovieDBResponse.ERROR) {
                             forceLoad();
                         } else {
                             deliverResult(cache);
@@ -77,30 +86,35 @@ public class GetMoviesLoaderCallbacks implements LoaderManager.LoaderCallbacks<A
                     }
 
                     @Override
-                    public ArrayList<Movie> loadInBackground() {
+                    public MoviesResponse loadInBackground() {
                         try {
-                            String response = NetworkUtil.getResponseFromHttpUrl(TheMovieDBUtil.getMostPopularUrl());
-                            return Movie.getMoviesFromJSONString(getContext(), response);
-                        } catch (IOException | JSONException e) {
+                            Response response = TheMovieDBUtil.getAPIService().getMostPopularMovies(BuildConfig.TMDBAK).execute();
+                            MoviesResponse moviesResponse = (MoviesResponse) response.body();
+                            if(moviesResponse != null) return cache = moviesResponse;
+
+                            cache = new MoviesResponse();
+                            cache.setResponseType(TheMovieDBResponse.ERROR);
+                            return cache = new GsonBuilder().create().fromJson(response.errorBody().string(), MoviesResponse.class);
+
+                        } catch (IOException e) {
                             e.printStackTrace();
                         }
                         return null;
                     }
 
                     @Override
-                    public void deliverResult(ArrayList<Movie> data) {
-                        cache = data;
+                    public void deliverResult(MoviesResponse data) {
                         super.deliverResult(data);
                     }
                 };
             case MainActivity.TOP_RATED_MOVIES_LOADER:
-                return new AsyncTaskLoader<ArrayList<Movie>>(context) {
+                return new AsyncTaskLoader<MoviesResponse>(context) {
 
-                    private ArrayList<Movie> cache;
+                    private MoviesResponse cache;
 
                     @Override
                     public void onStartLoading(){
-                        if(cache == null) {
+                        if(cache == null || cache.getResponseType() == TheMovieDBResponse.ERROR) {
                             forceLoad();
                         } else {
                             deliverResult(cache);
@@ -108,57 +122,23 @@ public class GetMoviesLoaderCallbacks implements LoaderManager.LoaderCallbacks<A
                     }
 
                     @Override
-                    public ArrayList<Movie> loadInBackground() {
+                    public MoviesResponse loadInBackground() {
                         try {
-                            String response = NetworkUtil.getResponseFromHttpUrl(TheMovieDBUtil.getTopRatedUrl());
-                            return Movie.getMoviesFromJSONString(getContext(), response);
-                        } catch (IOException | JSONException e) {
+                            Response response = TheMovieDBUtil.getAPIService().getTopRatedMovies(BuildConfig.TMDBAK).execute();
+                            MoviesResponse moviesResponse = (MoviesResponse) response.body();
+                            if(moviesResponse != null) return cache = moviesResponse;
+
+                            cache = new MoviesResponse();
+                            cache.setResponseType(TheMovieDBResponse.ERROR);
+                            return cache = new GsonBuilder().create().fromJson(response.errorBody().string(), MoviesResponse.class);
+                        } catch (IOException e) {
                             e.printStackTrace();
                         }
                         return null;
                     }
 
                     @Override
-                    public void deliverResult(ArrayList<Movie> data) {
-                        cache = data;
-                        super.deliverResult(data);
-                    }
-                };
-            case DetailsActivity.MOVIE_DETAILS_LOADER:
-                return new AsyncTaskLoader<ArrayList<Movie>>(context) {
-
-                    private ArrayList<Movie> cache;
-                    private int movieId = -2;
-
-                    @Override
-                    protected void onStartLoading() {
-                        int currentMovieId;
-                        if(cache == null &&
-                                args != null &&
-                                movieId != (currentMovieId = args.getInt(context.getString(R.string.bundle_movie_id), -1)) &&
-                                currentMovieId != -1){
-                            movieId = currentMovieId;
-                            forceLoad();
-                        } else {
-                            deliverResult(cache);
-                        }
-                    }
-
-                    @Override
-                    public ArrayList<Movie> loadInBackground() {
-                        try {
-                            ArrayList<Movie> result = new ArrayList<>(1);
-                            result.add(Movie.getMovieFromJSONString(context, NetworkUtil.getResponseFromHttpUrl(TheMovieDBUtil.getMovieUrl(movieId))));
-                            return result;
-                        } catch (JSONException | IOException e){
-                            // Errors handled in DetailActivity.movieDetailsLoadFinished()
-                        }
-                        return null;
-                    }
-
-                    @Override
-                    public void deliverResult(ArrayList<Movie> data) {
-                        cache = data;
+                    public void deliverResult(MoviesResponse data) {
                         super.deliverResult(data);
                     }
                 };
@@ -167,14 +147,14 @@ public class GetMoviesLoaderCallbacks implements LoaderManager.LoaderCallbacks<A
     }
 
     @Override
-    public void onLoadFinished(Loader<ArrayList<Movie>> loader, ArrayList<Movie> data) {
+    public void onLoadFinished(Loader<MoviesResponse> loader, MoviesResponse data) {
         handler.moviesLoaderFinished(loader, data);
     }
 
     @Override
-    public void onLoaderReset(Loader<ArrayList<Movie>> loader) {}
+    public void onLoaderReset(Loader<MoviesResponse> loader) {}
 
     public interface LoaderFinishedHandler{
-        void moviesLoaderFinished(Loader<ArrayList<Movie>> loader, ArrayList<Movie> data);
+        void moviesLoaderFinished(Loader<MoviesResponse> loader, MoviesResponse data);
     }
 }

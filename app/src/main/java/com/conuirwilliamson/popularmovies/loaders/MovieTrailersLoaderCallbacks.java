@@ -7,9 +7,12 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 
+import com.conuirwilliamson.popularmovies.BuildConfig;
 import com.conuirwilliamson.popularmovies.R;
 import com.conuirwilliamson.popularmovies.activities.DetailsActivity;
+import com.conuirwilliamson.popularmovies.apis.TheMovieDBAPIService;
 import com.conuirwilliamson.popularmovies.models.Trailer;
+import com.conuirwilliamson.popularmovies.models.TrailersResponse;
 import com.conuirwilliamson.popularmovies.utilities.NetworkUtil;
 import com.conuirwilliamson.popularmovies.utilities.TheMovieDBUtil;
 
@@ -41,7 +44,7 @@ public class MovieTrailersLoaderCallbacks implements LoaderManager.LoaderCallbac
             case DetailsActivity.MOVIE_TRAILERS_LOADER:
                 return new AsyncTaskLoader<ArrayList<Trailer>>(context) {
 
-                    private ArrayList<Trailer> cache;
+                    private TrailersResponse cache;
                     private int movieId;
 
                     @Override
@@ -49,7 +52,7 @@ public class MovieTrailersLoaderCallbacks implements LoaderManager.LoaderCallbac
                         if(cache != null ||
                                 args == null ||
                                 (movieId = args.getInt(context.getString(R.string.bundle_movie_id), -1)) == -1){
-                            deliverResult(cache);
+                            deliverResult(cache.getYoutubeResults());
                         } else {
                             forceLoad();
                         }
@@ -58,9 +61,8 @@ public class MovieTrailersLoaderCallbacks implements LoaderManager.LoaderCallbac
                     @Override
                     public ArrayList<Trailer> loadInBackground() {
                         try {
-                            String response = NetworkUtil.getResponseFromHttpUrl(TheMovieDBUtil.getMovieTrailersUrl(movieId));
-                            return Trailer.getTrailersFromJsonString(response, Trailer.YOUTUBE_TRAILER);
-                        } catch (IOException | JSONException e) {
+                            return (cache = TheMovieDBUtil.getAPIService().getTrailersByMovieId(movieId, BuildConfig.TMDBAK).execute().body()).getYoutubeResults();
+                        } catch (IOException e) {
                             e.printStackTrace();
                         }
                         return null;
@@ -68,7 +70,6 @@ public class MovieTrailersLoaderCallbacks implements LoaderManager.LoaderCallbac
 
                     @Override
                     public void deliverResult(ArrayList<Trailer> data) {
-                        cache = data;
                         super.deliverResult(data);
                     }
                 };

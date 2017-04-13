@@ -1,131 +1,90 @@
 package com.conuirwilliamson.popularmovies.models;
 
-import android.content.Context;
 import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.conuirwilliamson.popularmovies.data.FavouriteMoviesContract;
-import com.conuirwilliamson.popularmovies.utilities.TheMovieDBUtil;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.gson.annotations.Expose;
 
 import java.util.ArrayList;
 
-public class Movie implements Parcelable{
+public class Movie extends TheMovieDBResponse implements Parcelable{
 
-    private static final String TAG = Movie.class.getSimpleName();
+    @Expose
+    private String poster_path;
+    public String getPosterPath(){ return poster_path; }
 
-    private static final String PAGE = "page";
-    private static final String RESULTS = "results";
-    private static final String TOTAL_RESULTS = "total_results";
-    private static final String TOTAL_PAGES = "total_pages";
+    @Expose
+    private String overview;
+    public String getOverview() { return overview; }
 
-    private static final String POSTER_PATH = "poster_path";
-    private static final String ADULT = "adult";
-    private static final String OVERVIEW = "overview";
-    private static final String RELEASE_DATE = "release_date";
-    private static final String GENRE_IDS = "genre_ids";
-    private static final String ID = "id";
-    private static final String ORIGINAL_TITLE = "original_title";
-    private static final String ORIGINAL_LANGUAGE = "original_language";
-    private static final String TITLE = "title";
-    private static final String BACKDROP_PATH = "backdrop_path";
-    private static final String POPULARITY = "popularity";
-    private static final String VOTE_COUNT = "vote_count";
-    private static final String VIDEO = "video";
-    private static final String VOTE_AVERAGE = "vote_average";
+    @Expose
+    private String release_date;
+    public String getReleaseDate() { return release_date; }
 
-    private static final String IMDB_ID = "imdb_id";
-    private static final String HOMEPAGE = "homepage";
-    private static final String RUNTIME = "runtime";
-    private static final String BUDGET = "budget";
+    @Expose
+    private int id;
+    public int getID() { return id; }
 
-    private static final String STATUS_CODE = "status_code";
-    private static final String STATUS_MESSAGE = "status_message";
+    @Expose
+    private String title;
+    public String getTitle() { return title; }
 
+    @Expose
+    private String backdrop_path;
+    public String getBackdropPath() { return backdrop_path; }
 
-    private static int mStatusCode;
-    private static void setStatusCode(int value) { mStatusCode = value; }
-    public static int getStatusCode() { return mStatusCode; }
+    @Expose
+    private String vote_average;
+    public String getVoteAverage() { return vote_average; }
 
-    private String mPosterPath;
-    private void setPosterPath(String value) { mPosterPath = value; }
-    public String getPosterPath(){ return mPosterPath; }
+    @Expose
+    private String runtime;
+    public String getRuntime() { return runtime; }
 
-    private String mOverview;
-    private void setOverview(String value) { mOverview = value; }
-    public String getOverview() { return mOverview; }
+    @Expose
+    private boolean adult;
+    public boolean getAdult() { return adult; }
 
-    private String mReleaseDate;
-    private void setReleaseDate(String value) { mReleaseDate = value; }
-    public String getReleaseDate() { return mReleaseDate; }
+    @Expose
+    private ArrayList<Integer> genre_ids;
+    public ArrayList<Integer> getGenreIds() { return genre_ids; }
 
-    private int mID;
-    private void setID(int value) { mID = value; }
-    public int getID() { return mID; }
+    @Expose
+    private String original_title;
+    public String getOriginalTitle() { return original_title; }
 
-    private String mTitle;
-    private void setTitle(String value) { mTitle = value; }
-    public String getTitle() { return mTitle; }
+    @Expose
+    private String original_language;
+    public String getOriginalLanguage() { return original_language; }
 
-    private String mBackdropPath;
-    private void setBackdropPath(String value) { mBackdropPath = value; }
-    public String getBackdropPath() { return mBackdropPath; }
+    @Expose
+    private double popularity;
+    public double getPopularity() { return popularity; }
 
-    private String mVoteAverage;
-    private void setVoteAverage(String value) { mVoteAverage = value; }
-    public String getVoteAverage() { return mVoteAverage; }
+    @Expose
+    private int vote_count;
+    public int getVoteCount() { return vote_count; }
 
-    private String mRuntime;
-    private void setRuntime(String value) { mRuntime = value; }
-    public String getRuntime() { return mRuntime; }
+    @Expose
+    private boolean video;
+    public boolean getVideo() { return video; }
 
-//    private boolean mIsAdult;
-//    private void setIsAdult(boolean value) { mIsAdult = value; }
-//    public boolean getIsAdult() { return mIsAdult; }
+    @Expose
+    private String imdb_id;
+    public String getImdbId() { return imdb_id; }
 
-//    private String[] mGenres;
-//    private void setGenres(String[] value) { mGenres = value; }
-//    public String[] getGenres() { return mGenres; }
+    @Expose
+    private String homepage;
+    public String getHomepage() { return homepage; }
 
-//    private String mOriginalTitle;
-//    private void setOriginalTitle(String value) { mOriginalTitle = value; }
-//    public String getOriginalTitle() { return mOriginalTitle; }
+    @Expose
+    private int budget;
+    public int getBudget() { return budget; }
 
-//    private String mOriginalLanguage;
-//    private void setOriginalLanguage(String value) { mOriginalLanguage = value; }
-//    public String getOriginalLanguage() { return mOriginalLanguage; }
-
-//    private double mPopularity;
-//    private void setPopularity(double value) { mPopularity = value; }
-//    public double getPopularity() { return mPopularity; }
-
-//    private int mVoteCount;
-//    private void setVoteCount(int value) { mVoteCount = value; }
-//    public int getVoteCount() { return mVoteCount; }
-
-//    private boolean mVideo;
-//    private void setVideo(boolean value) { mVideo = value; }
-//    public boolean getVideo() { return mVideo; }
-
-//    private String mImdbId;
-//    private void setImdbId(String value) { mImdbId = value; }
-//    public String getImdbId() { return mImdbId; }
-
-//    private String mHomepage;
-//    private void setHomepage(String value) { mHomepage = value; }
-//    public String getHomepage() { return mHomepage; }
-
-//    private int mBudget;
-//    private void setBudget(int value) { mBudget = value; }
-//    public int getBudget() { return mBudget; }
-
-    private Movie(){}
+    public Movie() { genre_ids = new ArrayList<>(); }
 
     public static final Creator<Movie> CREATOR
             = new Creator<Movie>() {
@@ -139,121 +98,24 @@ public class Movie implements Parcelable{
     };
 
     private Movie(Parcel in){
-        mPosterPath = in.readString();
-        mOverview = in.readString();
-        mReleaseDate = in.readString();
-        mID = in.readInt();
-        mTitle = in.readString();
-        mBackdropPath = in.readString();
-        mVoteAverage = in.readString();
-        mRuntime = in.readString();
-//        mIsAdult = in.readInt() == 1;
-//        mGenres = in.createStringArray();
-//        mOriginalTitle = in.readString();
-//        mOriginalLanguage = in.readString();
-//        mPopularity = in.readDouble();
-//        mVoteCount = in.readInt();
-//        mVideo = in.readInt() == 1;
-//        mImdbId = in.readString();
-//        mHomepage = in.readString();
-//        mBudget = in.readInt();
-    }
-
-    public static Movie getMovieFromJSON(@NonNull Context context, @NonNull JSONObject json) throws JSONException {
-        if(json.has(STATUS_CODE)){
-            int statusCode = json.getInt(STATUS_CODE);
-            Log.w(TAG, "Error retrieving movie. -- Status Code: " + statusCode + " -- Status Message: " + json.getString(STATUS_MESSAGE));
-            Movie.setStatusCode(statusCode);
-            return null;
-        }
-
-        Movie movie = new Movie();
-
-        if(json.has(POSTER_PATH)){
-            movie.setPosterPath(json.getString(POSTER_PATH));
-        }
-        if(json.has(OVERVIEW)){
-            movie.setOverview(json.getString(OVERVIEW));
-        }
-        if(json.has(RELEASE_DATE)){
-            movie.setReleaseDate(TheMovieDBUtil.formatDate(context, json.getString(RELEASE_DATE)));
-        }
-        if(json.has(ID)){
-            movie.setID(json.getInt(ID));
-        }
-        if(json.has(TITLE)){
-            movie.setTitle(json.getString(TITLE));
-        }
-        if(json.has(BACKDROP_PATH)){
-            movie.setBackdropPath(json.getString(BACKDROP_PATH));
-        }
-        if(json.has(VOTE_AVERAGE)){
-            movie.setVoteAverage(json.getDouble(VOTE_AVERAGE) + " / 10");
-        }
-        if(json.has(RUNTIME)){
-            movie.setRuntime(json.getInt(RUNTIME) + " min");
-        }
-//        if(json.has(ADULT)){
-//            movie.setIsAdult(json.getBoolean(ADULT));
-//        }
-//        if(json.has(GENRE_IDS)){
-//            JSONArray genreIdsJSONArray = json.getJSONArray(GENRE_IDS);
-//            int len = genreIdsJSONArray.length();
-//            int[] genreIds = new int[len];
-//            for(int i = 0; i < len; i++){
-//                genreIds[i] = genreIdsJSONArray.getInt(i);
-//            }
-//            movie.setGenres(TheMovieDBUtil.getStringsForGenreIds(context, genreIds));
-//        }
-//        if(json.has(ORIGINAL_TITLE)){
-//            movie.setOriginalTitle(json.getString(ORIGINAL_TITLE));
-//        }
-//        if(json.has(ORIGINAL_LANGUAGE)){
-//            movie.setOriginalLanguage(json.getString(ORIGINAL_LANGUAGE));
-//        }
-//        if(json.has(POPULARITY)){
-//            movie.setPopularity(json.getDouble(POPULARITY));
-//        }
-//        if(json.has(VOTE_COUNT)){
-//            movie.setVoteCount(json.getInt(VOTE_COUNT));
-//        }
-//        if(json.has(VIDEO)){
-//            movie.setVideo(json.getBoolean(VIDEO));
-//        }
-//        if(json.has(IMDB_ID)){
-//            movie.setImdbId(json.getString(IMDB_ID));
-//        }
-//        if(json.has(HOMEPAGE)){
-//            movie.setHomepage(json.getString(HOMEPAGE));
-//        }
-//        if(json.has(BUDGET)){
-//            movie.setBudget(json.getInt(BUDGET));
-//        }
-        return movie;
-    }
-
-    public static ArrayList<Movie> getMoviesFromJSON(@NonNull Context context, @NonNull JSONObject json) throws JSONException {
-        if(json.has(STATUS_CODE)){
-            int statusCode = json.getInt(STATUS_CODE);
-            Log.w(TAG, "Error retrieving movies. -- Status Code: " + statusCode + " -- Status Message: " + json.getString(STATUS_MESSAGE));
-            Movie.setStatusCode(statusCode);
-            return null;
-        }
-
-        JSONArray moviesJSONArray = json.getJSONArray(RESULTS);
-
-        int len = moviesJSONArray.length();
-        ArrayList<Movie> movies = new ArrayList<>(len);
-
-        for(int i = 0; i < len; i++){
-            movies.add(getMovieFromJSON(context, moviesJSONArray.getJSONObject(i)));
-        }
-
-        return movies;
-    }
-
-    public static Movie getMovieFromJSONString(@NonNull Context context, @NonNull String json) throws JSONException {
-        return getMovieFromJSON(context, new JSONObject(json));
+        poster_path = in.readString();
+        overview = in.readString();
+        release_date = in.readString();
+        id = in.readInt();
+        title = in.readString();
+        backdrop_path = in.readString();
+        vote_average = in.readString();
+        runtime = in.readString();
+        adult = in.readInt() == 1;
+        genre_ids = in.readArrayList(Integer.class.getClassLoader());
+        original_title = in.readString();
+        original_language = in.readString();
+        popularity = in.readDouble();
+        vote_count = in.readInt();
+        video = in.readInt() == 1;
+        imdb_id = in.readString();
+        homepage = in.readString();
+        budget = in.readInt();
     }
 
     public static ArrayList<Movie> getFavoritedMoviesFromCursor(@NonNull Cursor cursor) {
@@ -267,9 +129,9 @@ public class Movie implements Parcelable{
 
         while(cursor.moveToNext()){
             Movie movie = new Movie();
-            movie.setPosterPath(cursor.getString(posterColumn));
-            movie.setTitle(cursor.getString(titleColumn));
-            movie.setID(cursor.getInt(idColumn));
+            movie.poster_path = cursor.getString(posterColumn);
+            movie.title = cursor.getString(titleColumn);
+            movie.id = cursor.getInt(idColumn);
             result.add(movie);
         }
 
@@ -277,10 +139,6 @@ public class Movie implements Parcelable{
 
         return result;
     }
-
-    public static ArrayList<Movie> getMoviesFromJSONString(@NonNull Context context, @NonNull String json) throws JSONException{ return getMoviesFromJSON(context, new JSONObject(json)); }
-
-
 
     @Override
     public String toString() { return getTitle(); }
@@ -292,23 +150,23 @@ public class Movie implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(mPosterPath);
-        dest.writeString(mOverview);
-        dest.writeString(mReleaseDate);
-        dest.writeInt(mID);
-        dest.writeString(mTitle);
-        dest.writeString(mBackdropPath);
-        dest.writeString(mVoteAverage);
-        dest.writeString(mRuntime);
-//        dest.writeInt(mIsAdult ? 1 : 0);
-//        dest.writeStringArray(mGenres);
-//        dest.writeString(mOriginalTitle);
-//        dest.writeString(mOriginalLanguage);
-//        dest.writeDouble(mPopularity);
-//        dest.writeInt(mVoteCount);
-//        dest.writeInt(mVideo ? 1 : 0);
-//        dest.writeString(mImdbId);
-//        dest.writeString(mHomepage);
-//        dest.writeInt(mBudget);
+        dest.writeString(poster_path);
+        dest.writeString(overview);
+        dest.writeString(release_date);
+        dest.writeInt(id);
+        dest.writeString(title);
+        dest.writeString(backdrop_path);
+        dest.writeString(vote_average);
+        dest.writeString(runtime);
+        dest.writeInt(adult ? 1 : 0);
+        dest.writeList(genre_ids);
+        dest.writeString(original_title);
+        dest.writeString(original_language);
+        dest.writeDouble(popularity);
+        dest.writeInt(vote_count);
+        dest.writeInt(video ? 1 : 0);
+        dest.writeString(imdb_id);
+        dest.writeString(homepage);
+        dest.writeInt(budget);
     }
 }

@@ -25,13 +25,14 @@ import com.conuirwilliamson.popularmovies.adapters.MovieReviewsAdapter;
 import com.conuirwilliamson.popularmovies.adapters.MovieTrailersAdapter;
 import com.conuirwilliamson.popularmovies.data.FavouriteMoviesContract;
 import com.conuirwilliamson.popularmovies.loaders.AddFavoritedMovieLoaderCallbacks;
-import com.conuirwilliamson.popularmovies.loaders.GetFavoritedMovieLoaderCallbacks;
-import com.conuirwilliamson.popularmovies.loaders.GetMoviesLoaderCallbacks;
+import com.conuirwilliamson.popularmovies.loaders.GetFavoritedMoviesLoaderCallbacks;
+import com.conuirwilliamson.popularmovies.loaders.GetMovieLoaderCallbacks;
 import com.conuirwilliamson.popularmovies.loaders.MovieReviewsLoaderCallbacks;
 import com.conuirwilliamson.popularmovies.loaders.MovieTrailersLoaderCallbacks;
 import com.conuirwilliamson.popularmovies.loaders.UpdateFavoritedMovieLoaderCallbacks;
 import com.conuirwilliamson.popularmovies.models.Movie;
 import com.conuirwilliamson.popularmovies.models.Review;
+import com.conuirwilliamson.popularmovies.models.TheMovieDBResponse;
 import com.conuirwilliamson.popularmovies.models.Trailer;
 import com.conuirwilliamson.popularmovies.utilities.TheMovieDBUtil;
 import com.squareup.picasso.Callback;
@@ -43,10 +44,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class DetailsActivity extends AppCompatActivity implements
-        GetMoviesLoaderCallbacks.LoaderFinishedHandler,
+        GetMovieLoaderCallbacks.LoaderFinishedHandler,
         MovieTrailersLoaderCallbacks.LoaderFinishedHandler,
         MovieReviewsLoaderCallbacks.LoaderFinishedHandler,
-        GetFavoritedMovieLoaderCallbacks.LoaderFinishedHandler,
+        GetFavoritedMoviesLoaderCallbacks.LoaderFinishedHandler,
         AddFavoritedMovieLoaderCallbacks.LoaderFinishedHandler,
         UpdateFavoritedMovieLoaderCallbacks.LoaderFinishedHandler,
         MovieTrailersAdapter.TrailersAdapterOnClickHandler{
@@ -72,10 +73,10 @@ public class DetailsActivity extends AppCompatActivity implements
     public static final int UPDATE_MOVIE_POSTER_LOADER          = 5009;
     public static final int ADD_FAVORITED_MOVIE_LOADER          = 5010;
 
-    private GetMoviesLoaderCallbacks            movieDetailsLoaderCallbacks;
+    private GetMovieLoaderCallbacks             movieDetailsLoaderCallbacks;
     private MovieTrailersLoaderCallbacks        movieTrailersLoaderCallbacks;
     private MovieReviewsLoaderCallbacks         movieReviewsLoaderCallbacks;
-    private GetFavoritedMovieLoaderCallbacks    getFavoritedMovieLoaderCallbacks;
+    private GetFavoritedMoviesLoaderCallbacks   getFavoritedMoviesLoaderCallbacks;
     private AddFavoritedMovieLoaderCallbacks    addFavoritedMovieLoaderCallbacks;
     private UpdateFavoritedMovieLoaderCallbacks updateFavoritedMovieLoaderCallbacks;
 
@@ -131,10 +132,10 @@ public class DetailsActivity extends AppCompatActivity implements
         rvTrailers.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         rvTrailers.setAdapter(trailersAdapter);
 
-        movieDetailsLoaderCallbacks = new GetMoviesLoaderCallbacks(this, this);
+        movieDetailsLoaderCallbacks = new GetMovieLoaderCallbacks(this, this);
         movieTrailersLoaderCallbacks = new MovieTrailersLoaderCallbacks(this, this);
         movieReviewsLoaderCallbacks = new MovieReviewsLoaderCallbacks(this, this);
-        getFavoritedMovieLoaderCallbacks = new GetFavoritedMovieLoaderCallbacks(this, this);
+        getFavoritedMoviesLoaderCallbacks = new GetFavoritedMoviesLoaderCallbacks(this, this);
         addFavoritedMovieLoaderCallbacks = new AddFavoritedMovieLoaderCallbacks(this, this);
         updateFavoritedMovieLoaderCallbacks = new UpdateFavoritedMovieLoaderCallbacks(this, this);
     }
@@ -259,19 +260,18 @@ public class DetailsActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void moviesLoaderFinished(Loader<ArrayList<Movie>> loader, ArrayList<Movie> movies) {
-        if(movies == null || movies.size() == 0) return;
+    public void movieLoaderFinished(Loader<Movie> loader, Movie movie) {
+        if(movie == null) return;
 
-        Movie movie = movies.get(0);
-        if (movie != null) {
+        if (movie.getResponseType() == TheMovieDBResponse.SUCCESS) {
             this.movie = movie;
             Bundle queryBundle = new Bundle();
             queryBundle.putInt(getString(R.string.bundle_movie_id), movieId);
-            getSupportLoaderManager().restartLoader(FAVORITED_MOVIE_LOADER, queryBundle, getFavoritedMovieLoaderCallbacks);
+            getSupportLoaderManager().restartLoader(FAVORITED_MOVIE_LOADER, queryBundle, getFavoritedMoviesLoaderCallbacks);
             displayMovie(movie);
         } else {
             int statusCode;
-            switch (statusCode = Movie.getStatusCode()) {
+            switch (statusCode = movie.getStatusCode()) {
                 case TheMovieDBUtil.INVALID_API_KEY:
                 case TheMovieDBUtil.RESOURCE_NOT_FOUND:
                     setResultWithIntent(statusCode);
@@ -284,7 +284,7 @@ public class DetailsActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void getFavoritedMovieLoaderFinished(Loader<Cursor> loader, Cursor cursor) {
+    public void getFavoritedMoviesLoaderFinished(Loader<Cursor> loader, Cursor cursor) {
         if (cursor != null) {
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();

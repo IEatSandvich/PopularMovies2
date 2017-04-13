@@ -1,6 +1,7 @@
 package com.conuirwilliamson.popularmovies.activities;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -22,8 +23,11 @@ import android.widget.TextView;
 
 import com.conuirwilliamson.popularmovies.R;
 import com.conuirwilliamson.popularmovies.adapters.MoviesAdapter;
+import com.conuirwilliamson.popularmovies.loaders.GetFavoritedMoviesLoaderCallbacks;
 import com.conuirwilliamson.popularmovies.loaders.GetMoviesLoaderCallbacks;
 import com.conuirwilliamson.popularmovies.models.Movie;
+import com.conuirwilliamson.popularmovies.models.MoviesResponse;
+import com.conuirwilliamson.popularmovies.models.TheMovieDBResponse;
 import com.conuirwilliamson.popularmovies.utilities.SharedPrefsUtil;
 import com.conuirwilliamson.popularmovies.utilities.TheMovieDBUtil;
 import com.conuirwilliamson.popularmovies.utilities.UIUtil;
@@ -38,7 +42,8 @@ import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity implements
         MoviesAdapter.MoviesAdapterOnClickHandler,
-        GetMoviesLoaderCallbacks.LoaderFinishedHandler{
+        GetMoviesLoaderCallbacks.LoaderFinishedHandler,
+        GetFavoritedMoviesLoaderCallbacks.LoaderFinishedHandler{
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({SEARCH_MODE_MOST_POPULAR, SEARCH_MODE_TOP_RATED, SEARCH_MODE_FAVORITED})
@@ -73,7 +78,8 @@ public class MainActivity extends AppCompatActivity implements
     private MenuItem miCancel;
     private MenuItem miSort;
 
-    private GetMoviesLoaderCallbacks moviesLoaderCallbacks;
+    private GetMoviesLoaderCallbacks          moviesLoaderCallbacks;
+    private GetFavoritedMoviesLoaderCallbacks favoritedMoviesLoaderCallbacks;
 
     private MoviesAdapter moviesAdapter;
     private LinearLayoutManager linearLayoutManager;
@@ -90,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements
         ButterKnife.bind(this);
 
         moviesLoaderCallbacks = new GetMoviesLoaderCallbacks(this, this);
+        favoritedMoviesLoaderCallbacks = new GetFavoritedMoviesLoaderCallbacks(this, this);
 
         linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         gridLayoutManagerFourCol = new GridLayoutManager(this, 4, GridLayoutManager.VERTICAL, false);
@@ -124,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements
                             if(getLastSearch() == SEARCH_MODE_FAVORITED) {
                                 Bundle queryBundle = new Bundle();
                                 queryBundle.putBoolean(getString(R.string.bundle_favorited_changed), requireFavoritedRefresh);
-                                getSupportLoaderManager().restartLoader(FAVORITED_MOVIES_LOADER, queryBundle, moviesLoaderCallbacks);
+                                getSupportLoaderManager().restartLoader(FAVORITED_MOVIES_LOADER, queryBundle, favoritedMoviesLoaderCallbacks);
                             }
                         }
                         break;
@@ -213,7 +220,7 @@ public class MainActivity extends AppCompatActivity implements
                 getSupportLoaderManager().restartLoader(TOP_RATED_MOVIES_LOADER, bundle, moviesLoaderCallbacks);
                 break;
             case SEARCH_MODE_FAVORITED:
-                getSupportLoaderManager().restartLoader(FAVORITED_MOVIES_LOADER, bundle, moviesLoaderCallbacks);
+                getSupportLoaderManager().restartLoader(FAVORITED_MOVIES_LOADER, bundle, favoritedMoviesLoaderCallbacks);
                 break;
         }
     }
@@ -254,34 +261,23 @@ public class MainActivity extends AppCompatActivity implements
         startLoadingMovies(search);
     }
 
+    private boolean loadingIncorrectMovies(int loaderId){
+        int lastSearch = getLastSearch();
+        return (loaderId == FAVORITED_MOVIES_LOADER && lastSearch != SEARCH_MODE_FAVORITED ||
+                loaderId == MOST_POPULAR_MOVIES_LOADER && lastSearch != SEARCH_MODE_MOST_POPULAR ||
+                loaderId == TOP_RATED_MOVIES_LOADER && lastSearch != SEARCH_MODE_TOP_RATED);
+    }
+
     @Override
-    public void moviesLoaderFinished(Loader<ArrayList<Movie>> loader, ArrayList<Movie> movies) {
+    public void moviesLoaderFinished(Loader<MoviesResponse> loader, MoviesResponse response) {
 
-        // NOTE FOR REVIEWER:
-        //
-        // For some reason, when loading up movies, if you favorite/unfavorite a movie,
-        // return to MainActivity, go back into a movie, favorite/unfavorite it, when you go back
-        // upon returning to the MainActivity, if you had selected a movie from Most Popular or Top Rated,
-        // it SHOULD display the appropriate set of movies, but for some reason, the FAVORITES_MOVIES_LOADER
-        // loader is called, thus returning the favorited movies. I can't for the life of me figure out why this
-        // is happening. If you can shed some light on this; maybe I'm implementing multiple loaders incorrectly,
-        // I don't know; it would be much appreciated.
-
-        // If loader.getId() doesn't match with current (or previously, if returning from DetailsActivity)
-        // searched movies, return.
-
-        int id = loader.getId();
-        if(id == FAVORITED_MOVIES_LOADER && getLastSearch() != SEARCH_MODE_FAVORITED ||
-           id == MOST_POPULAR_MOVIES_LOADER && getLastSearch() != SEARCH_MODE_MOST_POPULAR ||
-           id == TOP_RATED_MOVIES_LOADER && getLastSearch() != SEARCH_MODE_TOP_RATED) return;
+        if(loadingIncorrectMovies(loader.getId())) return;
 
         showSort();
-
-        if (movies != null) {
-            showMovies(movies);
-            if(getLastSearch() == SEARCH_MODE_FAVORITED){ requireFavoritedRefresh = false; }
+        if (response.getResponseType() == TheMovieDBResponse.SUCCESS) {
+            showMovies(response.getResults());
         } else {
-            switch(Movie.getStatusCode()){
+            switch(response.getStatusCode()){
                 case TheMovieDBUtil.INVALID_API_KEY:
                     showError(getString(R.string.error_invalid_api_key));
                     break;
@@ -289,16 +285,23 @@ public class MainActivity extends AppCompatActivity implements
                     showError(getString(R.string.error_resource_not_found));
                     break;
                 default:
-                    switch (getLastSearch()) {
-                        case SEARCH_MODE_FAVORITED:
-                            showError(getString(R.string.msg_no_favorited_movies));
-                            break;
-                        case SEARCH_MODE_MOST_POPULAR:
-                        case SEARCH_MODE_TOP_RATED:
-                            showError(getString(R.string.error_loading_movies));
-                            break;
-                    }
+                    showError(getString(R.string.error_loading_movies));
             }
+        }
+    }
+
+    @Override
+    public void getFavoritedMoviesLoaderFinished(Loader<Cursor> loader, Cursor data){
+        if(loadingIncorrectMovies(loader.getId())) return;
+
+        showSort();
+        ArrayList<Movie> movies = Movie.getFavoritedMoviesFromCursor(data);
+
+        if (movies != null) {
+            showMovies(movies);
+            requireFavoritedRefresh = false;
+        } else {
+            showError(getString(R.string.msg_no_favorited_movies));
         }
     }
 
