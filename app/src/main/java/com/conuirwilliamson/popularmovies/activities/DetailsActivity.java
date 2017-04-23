@@ -152,42 +152,6 @@ public class DetailsActivity extends AppCompatActivity implements
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.details_menu, menu);
 
@@ -443,7 +407,9 @@ public class DetailsActivity extends AppCompatActivity implements
     public void handleClick(String url) {
         Uri trailerUri = Uri.parse(url);
         Intent launchTrailerIntent = new Intent(Intent.ACTION_VIEW, trailerUri);
-        startActivity(launchTrailerIntent);
+        if (launchTrailerIntent.resolveActivity(getPackageManager()) != null) {
+            startActivity(launchTrailerIntent);
+        }
     }
 
     private void showLoading() {
