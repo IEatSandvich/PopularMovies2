@@ -7,6 +7,5 @@ An Android app that allows users to discover the most popular and top-rated movi
 <p>If you haven't got one already:</p>
 <ol>
 <li><a href="https://www.themoviedb.org/account/signup">Sign up to TheMovieDB here.</a></li>
-<li>Once you have your API key, create a file called <code>key.properties</code> under the <code>/app</code> directory.</li>
-<li>In this new file, enter your API key like this: <code>TMDBAK = &quot;&lt;Your API Key Here&gt;&quot;</code>.</li>
+<li>Once you have your API key, add it to your <code>gradle.properties</code> file with the key <code>TMDBAK</code>.</li>
 </ol>

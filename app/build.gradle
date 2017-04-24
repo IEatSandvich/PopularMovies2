@@ -1,11 +1,5 @@
 apply plugin: 'com.android.application'
 
-static def loadKey(String property) {
-    Properties properties = new Properties()
-    properties.load(new FileInputStream("app/key.properties"))
-    return properties.getProperty(property)
-}
-
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
@@ -19,10 +13,10 @@ android {
     }
     buildTypes {
         debug {
-            buildConfigField "String", "TMDBAK", loadKey("TMDBAK")
+            buildConfigField "String", "TMDBAK", TMDBAK
         }
         release {
-            buildConfigField "String", "TMDBAK", loadKey("TMDBAK")
+            buildConfigField "String", "TMDBAK", TMDBAK
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
